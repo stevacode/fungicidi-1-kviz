@@ -1,0 +1,740 @@
+<!doctype html>
+<html lang="sr-Latn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fungicidi 1 - kviz</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      background: #f4f7f6;
+      color: #1d2a2e;
+      letter-spacing: 0;
+    }
+    .app {
+      min-height: 100vh;
+      padding: 16px;
+      display: -webkit-flex;
+      display: flex;
+      -webkit-flex-direction: column;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 980px;
+      margin: 0 auto;
+    }
+    header {
+      display: -webkit-flex;
+      display: flex;
+      -webkit-align-items: center;
+      align-items: center;
+      -webkit-justify-content: space-between;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 10px 0;
+    }
+    h1 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.1;
+    }
+    .badge {
+      border: 1px solid #aac4c1;
+      background: #ffffff;
+      color: #315f5a;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-weight: 700;
+      white-space: nowrap;
+      font-size: 14px;
+    }
+    .panel {
+      background: #ffffff;
+      border: 1px solid #d9e3e1;
+      border-radius: 8px;
+      padding: 14px;
+      box-shadow: 0 10px 25px rgba(29, 42, 46, 0.08);
+    }
+    .setup {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      -webkit-align-items: end;
+      align-items: end;
+    }
+    label {
+      display: block;
+      font-size: 12px;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: #51676b;
+      margin-bottom: 6px;
+    }
+    select, button {
+      width: 100%;
+      min-height: 48px;
+      border-radius: 8px;
+      border: 1px solid #b8c9c7;
+      background: #ffffff;
+      color: #1d2a2e;
+      font-size: 16px;
+      padding: 10px 12px;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    select {
+      background-image: linear-gradient(45deg, transparent 50%, #315f5a 50%), linear-gradient(135deg, #315f5a 50%, transparent 50%);
+      background-position: calc(100% - 18px) 20px, calc(100% - 12px) 20px;
+      background-size: 6px 6px, 6px 6px;
+      background-repeat: no-repeat;
+      padding-right: 34px;
+    }
+    button {
+      font-weight: 800;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .primary {
+      background: #0b6f6a;
+      color: #ffffff;
+      border-color: #0b6f6a;
+    }
+    .secondary {
+      background: #f8fbfb;
+      color: #315f5a;
+    }
+    .danger {
+      background: #8f2f24;
+      color: #ffffff;
+      border-color: #8f2f24;
+    }
+    .quiz-head {
+      display: -webkit-flex;
+      display: flex;
+      gap: 10px;
+      -webkit-align-items: center;
+      align-items: center;
+      -webkit-justify-content: space-between;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+    .meter {
+      height: 10px;
+      background: #e4ecea;
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 8px 0 14px;
+    }
+    .bar {
+      height: 100%;
+      width: 0%;
+      background: #b95000;
+      transition: width 180ms ease;
+    }
+    .meta {
+      display: -webkit-flex;
+      display: flex;
+      gap: 8px;
+      -webkit-flex-wrap: wrap;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .pill {
+      border-radius: 999px;
+      padding: 6px 10px;
+      background: #e9f1f0;
+      color: #315f5a;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .question {
+      font-size: 22px;
+      line-height: 1.32;
+      font-weight: 800;
+      margin: 8px 0 14px;
+    }
+    .answers {
+      display: grid;
+      gap: 10px;
+    }
+    .answer {
+      text-align: left;
+      line-height: 1.25;
+      background: #ffffff;
+      border: 1px solid #cad8d6;
+      min-height: 54px;
+      font-weight: 700;
+    }
+    .answer.correct {
+      background: #e6f4ea;
+      border-color: #2f7b45;
+      color: #1f5d33;
+    }
+    .answer.wrong {
+      background: #fae8e5;
+      border-color: #a74435;
+      color: #7d2f26;
+    }
+    .explain {
+      margin-top: 12px;
+      padding: 12px;
+      border-left: 4px solid #b95000;
+      background: #fff7ef;
+      border-radius: 6px;
+      line-height: 1.45;
+      display: none;
+    }
+    .actions {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .hidden { display: none; }
+    .result h2 {
+      margin: 0 0 8px;
+      font-size: 24px;
+    }
+    .review {
+      margin-top: 12px;
+      display: grid;
+      gap: 10px;
+    }
+    .review-item {
+      border: 1px solid #d9e3e1;
+      border-radius: 8px;
+      padding: 10px;
+      background: #fbfdfd;
+      line-height: 1.4;
+    }
+    .review-item strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+    @media (max-width: 720px) {
+      .app { padding: 12px; }
+      header { -webkit-align-items: flex-start; align-items: flex-start; }
+      h1 { font-size: 21px; }
+      .setup { grid-template-columns: 1fr; }
+      .quiz-head { -webkit-flex-direction: column; flex-direction: column; -webkit-align-items: stretch; align-items: stretch; }
+      .question { font-size: 20px; }
+      .actions { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <h1>Fungicidi 1</h1>
+      <div class="badge" id="bankSize">0 pitanja</div>
+    </header>
+
+    <section class="panel" id="setupPanel">
+      <div class="setup">
+        <div>
+          <label for="topicSelect">Tema</label>
+          <select id="topicSelect"></select>
+        </div>
+        <div>
+          <label for="focusSelect">Fokus</label>
+          <select id="focusSelect">
+            <option value="">Sve</option>
+            <option value="Mehanizam">Mehanizam</option>
+            <option value="Fizicke osobine">Fizičke osobine</option>
+            <option value="Sta suzbija">Šta suzbija</option>
+            <option value="Rezistentnost">Rezistentnost</option>
+          </select>
+        </div>
+        <div>
+          <label for="countSelect">Broj pitanja</label>
+          <select id="countSelect">
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="80">80</option>
+            <option value="all">Sve</option>
+          </select>
+        </div>
+        <button class="primary" id="startBtn" type="button">Start</button>
+      </div>
+    </section>
+
+    <section class="panel hidden" id="quizPanel">
+      <div class="quiz-head">
+        <div id="progressText">Pitanje 1/1</div>
+        <div id="scoreText">Tačno 0</div>
+      </div>
+      <div class="meter"><div class="bar" id="bar"></div></div>
+      <div class="meta">
+        <span class="pill" id="topicPill"></span>
+        <span class="pill" id="focusPill"></span>
+      </div>
+      <div class="question" id="questionText"></div>
+      <div class="answers" id="answers"></div>
+      <div class="explain" id="explain"></div>
+      <div class="actions">
+        <button class="secondary" id="restartBtn" type="button">Ponovo</button>
+        <button class="primary" id="nextBtn" type="button">Dalje</button>
+      </div>
+    </section>
+
+    <section class="panel result hidden" id="resultPanel">
+      <h2 id="resultTitle"></h2>
+      <div id="resultText"></div>
+      <div class="actions">
+        <button class="secondary" id="newQuizBtn" type="button">Novi kviz</button>
+        <button class="primary" id="sameQuizBtn" type="button">Ista oblast</button>
+      </div>
+      <div class="review" id="review"></div>
+    </section>
+  </div>
+
+  <script>
+    var QUESTIONS = [];
+    function q(topic, focus, question, correct, wrong1, wrong2, wrong3, explain) {
+      QUESTIONS.push({
+        topic: topic,
+        focus: focus,
+        question: question,
+        correct: correct,
+        wrong: [wrong1, wrong2, wrong3],
+        explain: explain
+      });
+    }
+
+    q("Bakar", "Mehanizam", "Na čemu se zasniva fungicidna aktivnost bakarnih jedinjenja?", "Na denaturaciji proteinskih delova enzima gljiva", "Na inhibiciji sinteze metionina", "Na blokadi Qo mesta u kompleksu III", "Na inhibiciji 3-keto-reduktaze", "Bakarni joni reaguju sa grupama u proteinima enzima i čine ih neaktivnim.");
+    q("Bakar", "Mehanizam", "Kako nerastvorni bakarni oblik prelazi u aktivan rastvorljiv oblik?", "U kontaktu sa eksudatima spora gljiva oslobađaju se bakarni joni", "Isključivo pod dejstvom UV svetla nastaje karbendazim", "U biljci se pretvara u UK-2A", "Alkalije ga pretvaraju u metionin", "Eksudati spora omogućavaju oslobađanje Cu jona koji deluju na enzime.");
+    q("Bakar", "Mehanizam", "Koje enzimske grupe su naročito osetljive na Cu jone?", "Sulfhidrilne SH grupe", "Metoksi-karbamatne grupe", "Sterolne C14 grupe", "Glukanske beta veze", "Skripta posebno naglašava enzime sa SH grupom kao najosetljivije.");
+    q("Bakar", "Sta suzbija", "Koji spektar je karakterističan za neorganska jedinjenja bakra?", "Širok spektar u voćarstvu, vinogradarstvu, ratarstvu, povrtarstvu i ukrasnom bilju", "Samo pepelnice na vinovoj lozi", "Samo skladišne bolesti citrusa", "Samo fuzarioze strnih žita", "Bakarna jedinjenja su širokog spektra i koriste se u više proizvodnji.");
+    q("Bakar", "Sta suzbija", "Koji patogeni su navedeni u spektru bakarnih jedinjenja?", "Plasmopara viticola, Phytophthora infestans, Venturia spp. i Taphrina deformans", "Tilletia tritici, Ustilago nuda i Fusarium spp. isključivo", "Botrytis cinerea, ali bez bakterija i plamenjača", "Samo Erysiphe necator i Blumeria graminis", "U skripti su navedene plamenjače, krastavost, Taphrina, Alternaria, Monilinia, Cercospora i dr.");
+    q("Bakar", "Sta suzbija", "Na koje bakterije bakarna jedinjenja ispoljavaju toksično delovanje?", "Erwinia amylovora, Pseudomonas syringae i Xanthomonas euvesicatoria", "Clavibacter, Agrobacterium i Rhizobium", "Bacillus subtilis, Streptomyces i Azotobacter", "Samo Plasmodiophora brassicae", "Bakar ima i baktericidni značaj u zaštiti bilja.");
+    q("Bakar", "Fizicke osobine", "Od čega se sastoji Bordovska čorba?", "Od bakar-sulfata i kalcijum-hidroksida", "Od sumpora i kalijum-bikarbonata", "Od mankozeba i metalaksila", "Od folpeta i fosetil-aluminijuma", "Bordovska čorba je smeša bakar-sulfata i kreča, odnosno kalcijum-hidroksida.");
+    q("Bakar", "Mehanizam", "Zašto se kreč dodaje u rastvor bakar-sulfata kod Bordovske čorbe?", "Da spreči prebrzo oslobađanje Cu jona i smanji fitotoksičnost", "Da poveća sistemično kretanje ksilemom", "Da aktivira QoI mehanizam", "Da pretvori bakar u sumpor-dioksid", "Samo bakar deluje fungicidno, a kreč smanjuje rizik od fitotoksičnih efekata.");
+    q("Bakar", "Fizicke osobine", "Koje osobine najbolje opisuju bakar-sulfat?", "Kristalna supstanca intenzivno plave boje, dobro rastvorljiva u vodi", "Crveni prah nerastvorljiv u vodi i foto nestabilan", "Viskozna žućkasto-braon tečnost", "Svetlo zeleni prah, nesistemik i lipofilan", "Bakar-sulfat je plavi kamen i jedini bakarni oblik iz skripte koji se dobro rastvara u vodi.");
+    q("Bakar", "Sta suzbija", "Za šta se bakar-sulfat može koristiti zbog algicidnog delovanja?", "Za suzbijanje algi u bazenima, jezerima, ribnjacima i drugim vodenim površinama", "Za suzbijanje pepelnice pšenice u klasanju", "Za tretiranje skladišnih citrusa protiv Penicillium spp.", "Za isključivo suzbijanje Sclerotinia sclerotiorum", "Skripta posebno navodi algicidno delovanje bakar-sulfata.");
+    q("Bakar", "Fizicke osobine", "Kako je opisan bakar-oksihlorid?", "Čvrsta praškasta plavičasto-zelena supstanca, praktično nerastvorljiva u vodi", "Bezbojna viskozna tečnost, lako rastvorljiva u vodi", "Žuti prah koji se dobro rastvara u ugljen-disulfidu", "Beli kristal sa ekstremno visokom rastvorljivošću u vodi", "Bakar-oksihlorid je plavičasto-zelen prah i praktično je nerastvorljiv u vodi.");
+    q("Bakar", "Fizicke osobine", "Sa čime bakar-oksihlorid nije kompatibilan?", "Sa organofosfatima, karbamatima i sumporno-krečnom čorbom", "Sa mankozebom i Cu-oksihloridom", "Sa svim multi-site fungicidima bez izuzetka", "Sa vodom, jer se u njoj potpuno razlaže", "Skripta navodi nekompatibilnost sa organofosfatima, karbamatima i sumporno-krečnom čorbom.");
+    q("Bakar", "Fizicke osobine", "Zašto je bakar-oksid crvene boje?", "Zato što je bakar jednovalentan u Cu2O", "Zato što sadrži maneb i cink", "Zato što prelazi u karbendazim", "Zato što sadrži sumpor u koloidnom obliku", "Bakar-oksid je Cu2O, a crvena boja je vezana za jednovalentni bakar.");
+    q("Bakar", "Sta suzbija", "U kojoj primeni se danas navodi bakar-oksid?", "U gotovim smešama sa mineralnim uljima za prezimljujuće forme patogena", "Samo za skladišne bolesti citrusa", "Za isključivo suzbijanje pepelnica u cvetanju jabuke", "Za inhibiciju metionina kod Botrytis cinerea", "Naveden je za prezimljujuće forme kao Venturia pyrina i Taphrina deformans.");
+    q("Bakar", "Fizicke osobine", "Koje osobine odgovaraju bakar-hidroksidu?", "Čvrsta praškasta plavo-zelena supstanca, slabo rastvorljiva u vodi", "Bezbojni kristali koji se dobro rastvaraju u vodi", "Braonkasta tečnost visokog napona pare", "Žuta supstanca koja se primenjuje samo u elementarnom stanju", "Bakar-hidroksid je plavo-zelen prah i često se koristi kao baktericid.");
+    q("Bakar", "Sta suzbija", "Za šta se koristi bakar-hidroksid?", "Za plamenjače, pegavosti, Alternaria sp., Septoria sp. i druga oboljenja", "Samo za Penicillium u skladištu", "Samo za rđe strnih žita", "Samo za Botrytis cinerea u berbi", "Skripta ga vezuje za plamenjače, pegavosti i baktericidnu primenu.");
+    q("Bakar", "Fizicke osobine", "Kada bakar-hidroksid može biti fitotoksičan?", "U uslovima hladnog i vlažnog vremena", "Samo pri temperaturama iznad 35 C u suvom vremenu", "Isključivo ako se primeni u zemljište", "Nikada, jer je potpuno netoksičan", "U skripti je posebno naglašena fitotoksičnost u hladnom i vlažnom vremenu.");
+
+    q("Sumpor", "Fizicke osobine", "U kom stanju se sumpor primenjuje kao fungicid?", "U elementarnom stanju", "Isključivo kao organski sistemik", "Samo kao bakarni helat", "Kao derivat metionina", "Sumpor se primenjuje u elementarnom stanju.");
+    q("Sumpor", "Fizicke osobine", "Koja su dva tipa formulacije sumpora navedena u skripti?", "Sumporni prah i kvašljivi sumpor", "EC i granule za zemljište", "Bordovska čorba i bakar-oksihlorid", "Samo vodeni rastvor", "Dostupan je kao sumporni prah i kvašljivi sumpor.");
+    q("Sumpor", "Fizicke osobine", "Koja je približna tačka topljenja sumpora iz skripte?", "115 C", "50 C", "220 C", "413 C", "U skripti je navedeno 115 C.");
+    q("Sumpor", "Fizicke osobine", "Kako se sumpor ponaša u vodi i ugljen-disulfidu?", "Nerastvorljiv je u vodi, a dobro rastvorljiv u ugljen-disulfidu", "Dobro se rastvara u vodi, a nerastvorljiv je u ugljen-disulfidu", "Ekstremno je rastvorljiv u vodi", "U vodi se odmah pretvara u karbendazim", "Sumpor je nerastvorljiv u vodi, a dobro se rastvara u CS2.");
+    q("Sumpor", "Fizicke osobine", "Šta se dešava sa sumporom u prisustvu jakih alkalija?", "Obrazuju se sulfidi", "Nastaje UK-2A", "Nastaje Bordovska čorba", "Nastaje etilen-bis-izotiocijanat", "Skripta navodi nastanak sulfida u prisustvu jakih alkalija.");
+    q("Sumpor", "Mehanizam", "Koji oksidi sumpora se povezuju sa njegovim fungicidnim delovanjem?", "Sumpor-dioksid i sumpor-trioksid", "Azot-monoksid i azot-dioksid", "Ugljen-monoksid i ugljen-dioksid", "Bakar-oksid i bakar-hidroksid", "SO2 i SO3 deluju kao jaka oksidaciona sredstva i narušavaju redoks sisteme.");
+    q("Sumpor", "Mehanizam", "Prema teoriji direktnog delovanja, kako sumpor remeti metabolizam gljiva?", "Ponaša se kao akceptor vodonika i remeti hidrogenaciju i dehidrogenaciju", "Vezuje se za C14 demetilazu kao DMI", "Inhibira sintezu metionina", "Blokira histidin kinazu osmotskog puta", "Sumpor se opisuje kao akceptor H2 i konkurent u elektronskom transportu.");
+    q("Sumpor", "Mehanizam", "Zašto su čestice koloidnog sumpora važne kod pepelnica?", "Ponašaju se kao mikro sočiva i termalno oštećuju epifitnu miceliju", "Pretvaraju se u kalcijum-hidroksid na listu", "Indukuju CYP51A1 ekspresiju", "Razlažu se u karbendazim u zemljištu", "Mikro-sočiva fokusiraju sunčevu svetlost i dovode do kauterizacije hifa.");
+    q("Sumpor", "Fizicke osobine", "Koja je optimalna temperatura primene sumpora?", "18-28 C", "0-8 C", "30-40 C", "Samo ispod 16 C", "Ispod 16 C deluje slabije, a iznad 30 C može biti fitotoksičan.");
+    q("Sumpor", "Sta suzbija", "Koji je najvažniji spektar sumpora?", "Pepelnice iz familije Erysiphaceae i grinje", "Samo plamenjače iz Oomycetes", "Samo bakterijske plamenjače", "Samo skladišne plesni citrusa", "Sumpor suzbija pepelnice i ima akaricidno delovanje.");
+    q("Sumpor", "Sta suzbija", "Koja je napomena za sumpor u jabuci?", "Ne primenjivati u toku fenofaze cvetanja", "Uvek primenjivati samo u cvetanju", "Koristiti samo za dezinfekciju alata", "Mešati sa jakim alkalijama", "Skripta naglašava da se ne koristi u jabuci tokom cvetanja.");
+
+    q("Ditiokarbamati", "Sta suzbija", "Koje ditiokarbamate navodi skripta?", "Mankozeb, ciram i metiram", "Kaptan, folpet i kaptafol", "Metalaksil, benalaksil i mefenoksam", "Pirimetanil, ciprodinil i fludioksonil", "U ovoj grupi su mankozeb, ciram i metiram.");
+    q("Ditiokarbamati", "Mehanizam", "Kako ditiokarbamati deluju na enzime gljiva?", "Kao helatni agensi reaguju sa tiol SH grupama", "Inhibiraju C14 demetilaciju lanosterola", "Blokiraju Qi mesto citohrom bc1 kompleksa", "Indukuju samo fitoaleksine bez direktnog delovanja", "Osnov je reakcija sa tiol grupama i inhibicija sulfhidrilnih enzima.");
+    q("Ditiokarbamati", "Mehanizam", "Zašto se mankozeb može smatrati pro-fungicidom?", "Posle izlaganja vodi i UV svetlu nastaju toksični izotiocijanatni metaboliti", "U biljci prelazi u karbendazim", "U zemljištu se vraća u UK-2A", "U vodi oslobađa sumpor-trioksid", "Mankozeb se razgrađuje do metabolita koji ometaju enzime sa SH grupom.");
+    q("Ditiokarbamati", "Fizicke osobine", "Šta je mankozeb po sastavu?", "Kompleksno jedinjenje maneba sa cinkom, sa Mn i Zn", "Bakar-sulfat sa kalcijum-hidroksidom", "Cijano-imidazolni peronosporicid", "Hidroksianilidni botriticid", "Skripta navodi mankozeb kao kompleks maneba sa Zn, 20% Mn i 2,5% Zn.");
+    q("Ditiokarbamati", "Fizicke osobine", "Kako se mankozeb ponaša posle deponovanja na list?", "Ostaje na površini lista i ne prodire kroz kutikulu", "Brzo se translocira ksilemom i floemom", "Isključivo deluje gasnom fazom", "Prodire u protoplast pšenice i prelazi u UK-2A", "Mankozeb je multi-site kontaktni fungicid.");
+    q("Ditiokarbamati", "Sta suzbija", "Koji patogeni su tipični za primenu mankozeba?", "Venturia inaequalis, Plasmopara viticola, Phytophthora infestans i Alternaria solani", "Samo Penicillium i Aspergillus u skladištu", "Samo Erysiphe necator u vinovoj lozi", "Samo Tilletia i Ustilago na semenu", "Mankozeb je širokog spektra i važan partner u zaštiti više kultura.");
+    q("Ditiokarbamati", "Rezistentnost", "Koja je antirezistentna uloga mankozeba?", "Čest je partner sistemičnim fungicidima visokog rizika", "Sam se sme koristiti neograničeno kao single-site fungicid", "Koristi se samo posle vidljivih simptoma", "Povećava selekcioni pritisak ako se meša sa bakrom", "Zbog multi-site delovanja smanjuje rizik kada je partner sistemicima.");
+    q("Ditiokarbamati", "Fizicke osobine", "Kako je opisan ciram?", "Bezbojna praškasta supstanca, slabo rastvorljiva u vodi, dobro rastvorljiva u hloroformu i acetonu", "Bela viskozna tečnost rastvorljiva u heksanu", "Crveni prah nerastvorljiv u vodi i amonijaku", "Svetlo zeleni prah sa izrazitom sistemičnošću", "Ciram je bezbojan prah i ima repelentno dejstvo za ptice i glodare.");
+    q("Ditiokarbamati", "Sta suzbija", "Koja primena cirama je posebno istaknuta?", "Suzbijanje Taphrina deformans, kovrdžavosti lista breskve", "Suzbijanje Pythium spp. zalivanjem rasada", "Suzbijanje Erwinia amylovora u jabuci", "Suzbijanje Botrytis cinerea u berbi jagode", "Ciram dobro suzbija T. deformans i ima repelentno dejstvo.");
+    q("Ditiokarbamati", "Fizicke osobine", "Kako je opisan metiram?", "Žuta praškasta supstanca, nerastvorljiva u vodi, nizak Ko/w", "Bezbojni kristal ekstremno rastvorljiv u vodi", "Viskozna tečnost žućkasto-braon boje", "Crveni prah koji se koristi samo sa mineralnim uljima", "Metiram je žuti prah, slabo se rastvara i ima nizak podeoni koeficijent.");
+    q("Ditiokarbamati", "Sta suzbija", "Šta metiram posebno dobro suzbija?", "Bolesti tipa plamenjača kao P. viticola, P. infestans i P. cubensis", "Samo skladišne truleži citrusa", "Isključivo rđe ruže", "Samo pepelnice bez plamenjača", "Skripta naglašava metiram kao dobar za plamenjače.");
+
+    q("Ftalimidi i ditianon", "Sta suzbija", "Koja jedinjenja pripadaju ftalimidima?", "Kaptan, folpet i kaptafol", "Mankozeb, metiram i ciram", "Ciazofamid, amisulbrom i fenpikoksamid", "Dimetomorf, iprovalikarb i mandipropamid", "Ftalimidi u skripti su kaptan, folpet i kaptafol.");
+    q("Ftalimidi i ditianon", "Mehanizam", "Koji produkt razgradnje se smatra aktivnim delom ftalimida?", "Tiofozgen koji reaguje sa tiolnim i aminokiselinskim delovima enzima", "Karbendazim koji sprečava deobno vreteno", "UK-2A koji inhibira Qi mesto", "Fitoaleksin koji nastaje u biljci", "Tiofozgen je nestabilan i dovodi do inaktivacije enzima.");
+    q("Ftalimidi i ditianon", "Sta suzbija", "Koji spektar je naveden za ftalimide?", "Venturia, Blumeriella, Taphrina, Monilinia, Plasmopara, Botrytis, Phytophthora, Alternaria i Rhizoctonia", "Samo Oomycetes bez pravih gljiva", "Samo Botrytis cinerea", "Samo bakterijske bolesti", "Ftalimidi imaju širok spektar, naročito u voćarstvu i vinogradarstvu.");
+    q("Ftalimidi i ditianon", "Fizicke osobine", "Kako je opisan kaptan?", "Bezbojna kristalna supstanca, slabo rastvorljiva u vodi, dobro u hloroformu, acetonu i benzolu", "Žuta viskozna tečnost, dobro rastvorljiva u vodi", "Bela praškasta supstanca ekstremno rastvorljiva u vodi", "Crveni prah koji deluje samo algicidno", "Kaptan je bezbojan kristal i protektivni fungicid sa izvesnim kurativnim delovanjem.");
+    q("Ftalimidi i ditianon", "Sta suzbija", "Za šta se kaptan koristi u tretiranju semena?", "Za Pythium sp., Phoma sp. i Rhizoctonia spp.", "Za Erysiphe necator i Blumeria graminis", "Za Phytophthora fragariae var. rubi", "Za Erwinia amylovora", "Kaptan se koristi i za seme ratarskih i povrtarskih biljaka.");
+    q("Ftalimidi i ditianon", "Fizicke osobine", "Koji fitotoksični efekat može dati kaptan na nekim sortama jabuke i kruške?", "Mrežavost plodova", "Hloroza samo korena", "Stvaranje voštanog filma", "Sterilnost cveta zbog metionina", "Skripta navodi mrežavost kod Zlatnog i Crvenog delišesa i Boskove bočice.");
+    q("Ftalimidi i ditianon", "Fizicke osobine", "Kako je opisan folpet?", "Bezbojna kristalna supstanca, nerastvorljiva u vodi, izrazito preventivno delovanje", "Viskozna tečnost žućkaste boje sa jakom sistemičnošću", "Beli prah ekstremno rastvorljiv u vodi", "Crveni prah za prezimljujuće forme", "Folpet je preventivni ftalimid i dominantno se koristi za plamenjaču vinove loze.");
+    q("Ftalimidi i ditianon", "Sta suzbija", "Koja praktična primena folpeta je dominantna?", "Suzbijanje Plasmopara viticola na vinovoj lozi", "Suzbijanje Penicillium digitatum u skladištu", "Suzbijanje Tilletia tritici na semenu", "Suzbijanje alga u ribnjacima", "Folpet se u praksi dominantno koristi protiv plamenjače vinove loze.");
+    q("Ftalimidi i ditianon", "Fizicke osobine", "Kako je opisan ditianon?", "Tamno smeđa kristalna supstanca, nerastvorljiva u vodi", "Bela viskozna tečnost ekstremno rastvorljiva u vodi", "Žuti prah koji se primenjuje u elementarnom stanju", "Bezbojni kristal koji se brzo kreće floemom", "Ditianon je kvinon, tamno smeđ kristal i bolje se rastvara u organskim rastvaračima.");
+    q("Ftalimidi i ditianon", "Fizicke osobine", "Šta ditianonu daje dobru postojanost na listu?", "Dobro vezivanje za lisnu površinu i redistribucija posle kiše", "Pretvaranje u karbendazim", "Ekstremna rastvorljivost u vodi", "Isključivo gasna faza", "Skripta navodi otpornost na spiranje i redistribuciju kišom.");
+    q("Ftalimidi i ditianon", "Sta suzbija", "Koji patogeni su navedeni za ditianon?", "Venturia inaequalis, Blumeriella jaapii, Monilinia spp., Taphrina deformans i Plasmopara viticola", "Samo Erysiphe necator i Blumeria graminis", "Samo Fusarium spp. na semenu", "Samo bakterije roda Xanthomonas", "Ditianon ima širok spektar uključujući krastavost, monilije, Taphrina i plamenjaču vinove loze.");
+    q("Ftalimidi i ditianon", "Mehanizam", "Kako ditianon deluje na gljive?", "Nespecifično inhibira, reaguje sa SH grupama, ometa disanje i formiranje proteina", "Inhibira samo sintezu metionina", "Blokira Qi mesto i citohrom c reduktazu", "Indukuje samo HR bez direktnog delovanja", "Ditianon je multi-site inhibitor sa efektom na SH enzime i ćelijsko disanje.");
+    q("Ftalimidi i ditianon", "Fizicke osobine", "Kada ditianon može izazvati rđanje plodova Zlatnog delišesa?", "Ako se primeni u fazi cvetanja i ranoj fazi formiranja plodova", "Samo pri tretiranju semena kukuruza", "Samo u skladištu citrusa", "Nikada, jer ne daje fitotoksičnost", "Skripta navodi slabo rđanje plodova u tim okolnostima.");
+
+    q("Acilalanini", "Sta suzbija", "Koja četiri acilalanina su navedena?", "Metalaksil, metalaksil-M, benalaksil i benalaksil-M", "Mankozeb, metiram, ciram i folpet", "Boskalid, flutolanil, fluopiram i izofetamid", "Pirimetanil, ciprodinil, spiroksamin i fenheksamid", "Skripta jasno navodi četiri jedinjenja, uključujući M oblike.");
+    q("Acilalanini", "Sta suzbija", "Koji je osnovni spektar acilalanina?", "Oomycetes, naročito prouzrokovači plamenjača", "Samo pepelnice iz Erysiphaceae", "Samo bakterije jabučastog voća", "Samo skladišni Penicillium", "Acilalanini su oomicetni fungicidi, odnosno peronosporicidi.");
+    q("Acilalanini", "Mehanizam", "Koji je mehanizam delovanja acilalanina?", "Inhibicija sinteze RNA preko ugradnje uridina u UTP", "Inhibicija sinteze metionina", "Blokada histidin kinaze u osmotskom prenosu signala", "Inhibicija sukcinat dehidrogenaze na Qp mestu", "Acilalanini prekidaju biosintezu RNA i time zaustavljaju rast gljive.");
+    q("Acilalanini", "Mehanizam", "Zašto acilalanini maksimalno deluju posle penetracije u biljno tkivo?", "Oospore imaju dovoljno ribozoma za klicinu cev, a delovanje se ispoljava preko RNA i rasta", "Zato što deluju samo parama", "Zato što se aktiviraju isključivo na površini semena", "Zato što deluju samo na već formirane zoospore", "Skripta objašnjava da ne inhibiraju samo klijanje oospora, već rast posle penetracije.");
+    q("Acilalanini", "Rezistentnost", "Koliki je rizik rezistentnosti kod acilalanina?", "Jako izražen, naročito kod Phytophthora infestans", "Veoma nizak, rezistentnost se ne javlja", "Samo kod bakterija", "Samo kod Penicillium expansum", "Acilalanini su grupa visokog rizika, sa rezistentnošću kontrolisanom dominantnim genom.");
+    q("Acilalanini", "Fizicke osobine", "Kako je opisan metalaksil?", "Bela čvrsta supstanca u obliku prašiva, umereno rastvorljiva u vodi", "Viskozna tečnost žućkasto-braon boje", "Bezbojni kristal koji je ekstremno rastvorljiv u vodi", "Svetlo zeleni prah nesistemik", "Metalaksil je beli prah, umereno rastvorljiv u vodi i dobro u acetonu.");
+    q("Acilalanini", "Sta suzbija", "Koje patogene metalaksil dobro suzbija folijarno?", "Pseudoperonospora humuli, P. cubensis, Phytophthora infestans, Plasmopara viticola i Bremia lactucae", "Botrytis cinerea, Monilinia laxa i Penicillium expansum", "Venturia inaequalis bez plamenjača", "Samo Erysiphe necator", "Metalaksil je peronosporicid sa spektrom prema Oomycetes.");
+    q("Acilalanini", "Sta suzbija", "Za koju primenu semena je naveden metalaksil?", "Tretiranje semena suncokreta protiv Plasmopara halstedii", "Tretiranje semena pšenice protiv Tilletia tritici", "Tretiranje semena salate protiv kaptana", "Samo tretiranje citrusa u skladištu", "Skripta navodi visoku efikasnost u prevenciji plamenjače suncokreta.");
+    q("Acilalanini", "Fizicke osobine", "Kako je opisan metalaksil-M?", "Viskozna tečnost žućkasto do svetlo braon boje, bolje rastvorljiva u vodi od metalaksila", "Beli kristalni prah nerastvorljiv u vodi", "Crveni prah koji se koristi sa mineralnim uljima", "Svetlo zeleni prah nesistemik", "Metalaksil-M je mefenoksam i bolje se rastvara u vodi od metalaksila.");
+    q("Acilalanini", "Sta suzbija", "Koji patogen na malini dobro suzbija metalaksil-M zalivanjem zone korena?", "Phytophthora fragariae var. rubi", "Venturia inaequalis", "Erysiphe necator", "Botrytis cinerea", "Ovaj detalj je posebno naveden za metalaksil-M.");
+    q("Acilalanini", "Fizicke osobine", "Kako je opisan benalaksil?", "Čvrsta supstanca u obliku bezbojnih kristala, slabo rastvorljiva u vodi", "Viskozna žućkasto-braon tečnost", "Žuti prah koji ne prodire kroz kutikulu", "Bela tečnost ekstremno rastvorljiva u vodi", "Benalaksil se dobro rastvara u organskim rastvaračima kao aceton, hloroform i dihlormetan.");
+    q("Acilalanini", "Mehanizam", "Šta benalaksil radi u razvoju gljive?", "Zaustavlja rast micelije i sprečava formiranje konidiofora i konidija", "Indukuje samo sintezu lignina u krastavcu", "Sprečava samo oslobađanje bakarnih jona", "Blokira isključivo sintezu metionina", "Skripta ovo navodi za benalaksil i benalaksil-M.");
+    q("Acilalanini", "Fizicke osobine", "Kako se benalaksil kreće posle usvajanja?", "Akropetalno, dospeva u sve delove biljke", "Samo gasnom fazom", "Samo bazipetalno u koren", "Ne kreće se u biljnom tkivu", "Benalaksil se usvaja korenom, stablom i listovima i kreće akropetalno.");
+    q("Acilalanini", "Fizicke osobine", "Šta je karakteristično za benalaksil-M?", "Slabo rastvorljiv u vodi, dobro u organskim rastvaračima, često u gotovim smešama sa mankozebom", "Ekstremno rastvorljiv u vodi i nesistemičan", "Nerastvorljiv u organskim rastvaračima i toksičan za pčele", "Koristi se samo kao algicid", "Benalaksil-M je kiralaksil, sistemik sa protektivnim, kurativnim i eradikativnim delovanjem.");
+
+    q("Tiofanati i toluamidi", "Fizicke osobine", "Kako je opisan tiofanat-metil?", "Bezbojni kristali, praktično nerastvorljiv u vodi, dobro rastvorljiv u organskim rastvaračima", "Viskozna tečnost, žućkasto-braon boje", "Crveni prah rastvorljiv u amonijaku", "Svetlo zeleni prah nerastvorljiv u toluenu", "Tiofanat-metil je sistemični fungicid koji se usvaja listom i korenom.");
+    q("Tiofanati i toluamidi", "Mehanizam", "U šta tiofanat-metil prelazi u biljnom tkivu i zemljištu?", "U karbendazim", "U UK-2A", "U Bordovsku čorbu", "U sumpor-dioksid", "Pod uticajem vlage i UV svetlosti tiofanat-metil ciklizacijom prelazi u karbendazim.");
+    q("Tiofanati i toluamidi", "Mehanizam", "Koji je mehanizam tiofanat-metila?", "Inhibira sintezu beta-tubulina i obrazovanje deobnog vretena", "Blokira C14 demetilaciju ergosterola", "Inhibira sintezu metionina", "Utiče na propustljivost membrana kao propamokarb", "Prekid mitoze nastaje zbog sprečavanja deobnog vretena.");
+    q("Tiofanati i toluamidi", "Sta suzbija", "Zbog rezistentnosti, na čemu se danas uglavnom bazira primena tiofanat-metila?", "Na suzbijanju fuzarioza strnih žita", "Na suzbijanju isključivo plamenjače vinove loze", "Na bakterijskoj plamenjači jabuke", "Na algama u vodenim površinama", "Skripta navodi da se zbog rezistentnosti primena sužava ka fuzariozama strnih žita.");
+    q("Tiofanati i toluamidi", "Rezistentnost", "Šta važi za populacije patogena rezistentne na benzimidazole?", "Rezistentne su i na tiofanat-metil", "Postaju osetljivije na tiofanat-metil", "Nisu povezane sa tiofanat-metilom", "Postaju rezistentne samo na bakar", "To je unakrsna rezistentnost.");
+    q("Tiofanati i toluamidi", "Fizicke osobine", "Kako je opisan zoksamid?", "Beli prašiv, slabo rastvorljiv u vodi, bolje u acetonu", "Bezbojna tečnost ekstremno rastvorljiva u vodi", "Žuti prah koji prelazi u karbendazim", "Bela supstanca koja se kreće floemom", "Zoksamid je toluamid i primarno protektivni fungicid.");
+    q("Tiofanati i toluamidi", "Mehanizam", "Kako zoksamid ometa deobu ćelija?", "Vezuje se za beta-subjedinicu tubulina i mikrotubularni citoskelet", "Inhibira C14 demetilazu lanosterola", "Blokira sintezu metionina", "Oslobađa Cu jone iz eksudata spora", "Zoksamid reaguje sa tubulinskim receptorima i razara strukturu jedra.");
+    q("Tiofanati i toluamidi", "Fizicke osobine", "Zašto je zoksamid otporan na spiranje kišom?", "Čvrsto se vezuje za kutikulu", "Ekstremno je rastvorljiv u vodi", "Kreće se isključivo floemom", "Pretvara se u kalcijum-hidroksid", "Visok afinitet prema kutikuli daje dobru rezidualnost.");
+    q("Tiofanati i toluamidi", "Sta suzbija", "Koji je praktično najvažniji spektar zoksamida?", "Oomycetes, naročito Phytophthora infestans, Plasmopara viticola i Pseudoperonospora cubensis", "Samo skladišni Penicillium", "Samo pepelnice strnih žita", "Samo bakterije paprike", "Iako deluje na neke prave gljive, praktično je vezan za plamenjače.");
+
+    q("Fluopikolid i aril-fenilketoni", "Fizicke osobine", "Kako je opisan fluopikolid?", "Bež čvrsta supstanca, veoma slabo rastvorljiva u vodi, nizak napon pare", "Žuta viskozna tečnost ekstremno rastvorljiva u vodi", "Crveni prah foto i termolabilan", "Bezbojni kristal koji deluje samo na skladišne plesni", "Fluopikolid ima srednji podeoni koeficijent i vrlo je perzistentan u zemljištu.");
+    q("Fluopikolid i aril-fenilketoni", "Sta suzbija", "Šta je fluopikolid po spektru?", "Specifičan peronosporicid za bolesti tipa plamenjača", "Specifičan botriticid bez delovanja na plamenjače", "Algicid za ribnjake", "Fungicid samo za rđe", "Deluje na pseudogljive iz klase Oomycetes.");
+    q("Fluopikolid i aril-fenilketoni", "Mehanizam", "Koji mehanizam je naveden za fluopikolid?", "Inhibira pomeranje vlakana deobnog vretena i razvoj micelije", "Blokira sintezu metionina", "Inhibira 3-keto-reduktazu", "Denaturiše enzime oslobađanjem Cu jona", "Fluopikolid utiče na deobu ćelija i stadijume razvoja pseudogljiva.");
+    q("Fluopikolid i aril-fenilketoni", "Sta suzbija", "Koji patogeni su u spektru fluopikolida?", "Plasmopara viticola, Phytophthora infestans, P. capsici, Peronospora tabacina i Bremia lactucae", "Erysiphe necator, Blumeria graminis i Podosphaera leucotricha isključivo", "Penicillium expansum i Aspergillus spp. isključivo", "Tilletia tritici i Ustilago nuda isključivo", "Spektar fluopikolida je dominantno Oomycetes.");
+    q("Fluopikolid i aril-fenilketoni", "Rezistentnost", "Zašto fluopikolid nema ukrštenu rezistentnost sa acilalaninima i CAA fungicidima?", "Ima unikatan/specifičan mehanizam delovanja", "Zato što je multi-site bakarni fungicid", "Zato što se uvek primenjuje samo sa sumporom", "Zato što deluje samo na bakterije", "FRAC ga vezuje za srednji rizik i unikatan mehanizam.");
+    q("Fluopikolid i aril-fenilketoni", "Mehanizam", "Kako aril-fenilketoni deluju na pepelnice?", "Ometaju funkciju motornih i strukturnih proteina i hifalnu morfogenezu", "Inhibiraju sintezu RNA preko UTP", "Oslobađaju bakarne jone", "Direktno blokiraju Qi mesto", "Dovode do malformacija infekcionih struktura, apresorija i hifa.");
+    q("Fluopikolid i aril-fenilketoni", "Fizicke osobine", "Koje osobine odgovaraju metrafenonu?", "Žućkasto-beli kristali, slabo rastvorljiv u vodi, umereno visok Ko/w", "Viskozna braon tečnost, veoma rastvorljiva u vodi", "Svetlo zeleni prah za tretiranje semena", "Beli prah ekstremno rastvorljiv u vodi", "Metrafenon je benzafenon sa preventivnim, kurativnim i delimično eradikativnim delovanjem.");
+    q("Fluopikolid i aril-fenilketoni", "Mehanizam", "Šta metrafenon radi infekcionim strukturama?", "Inhibira klijanje spora, blokira apresorije i dovodi do pucanja vrhova hifa", "Formira bakarne soli na površini lista", "Indukuje samo lignifikaciju korena", "Blokira sintezu metionina", "Metrafenon ima jako antisporulativno delovanje.");
+    q("Fluopikolid i aril-fenilketoni", "Fizicke osobine", "Kako je opisan pirifenon?", "Beličasti kristalni prah, slabo rastvorljiv u vodi, dobro u većini organskih rastvarača", "Crveni prah za prezimljujuće forme", "Bezbojna tečnost ekstremno rastvorljiva u vodi", "Žuti prah nerastvorljiv u organskim rastvaračima", "Pirifenon je benzoilpiridin sa lokal-sistemičnim i translaminarnim delovanjem.");
+    q("Fluopikolid i aril-fenilketoni", "Sta suzbija", "Koja je glavna primena pirifenona?", "Suzbijanje Erysiphe necator na vinovoj lozi i pepelnica strnih žita i tikvenjača", "Suzbijanje Pythium u zemljištu", "Suzbijanje bakterijske plamenjače jabuke", "Suzbijanje algi u bazenima", "Pirifenon se vezuje pre svega za pepelnice.");
+
+    q("SDHI", "Mehanizam", "Koje mesto ciljaju SDHI fungicidi?", "Sukcinat-dehidrogenazu u mitohondrijalnom kompleksu II", "C14 demetilazu lanosterola", "Histidin kinazu osmotskog puta", "Sintezu metionina", "SDHI inhibiraju respiraciju vezivanjem za SDH enzim.");
+    q("SDHI", "Mehanizam", "Šta SDHI blokiraju na molekularnom nivou?", "Redukciju ubikvinona na Qp mestu", "Ugradnju uridina u UTP", "Sekreciju hidrolitičkih enzima", "Oslobađanje Cu jona", "Vezivanjem za Qp mesto prekida se transport elektrona.");
+    q("SDHI", "Sta suzbija", "Na šta SDHI fungicidi ne deluju prema skripti?", "Na plamenjače, odnosno Oomycetes", "Na Venturia spp.", "Na Botrytis cinerea", "Na Sclerotinia sclerotiorum", "Skripta naglašava: ne deluju na plamenjače, pseudogljive.");
+    q("SDHI", "Rezistentnost", "Koje mutacije su važne za rezistentnost na SDHI?", "Tačkaste mutacije na SDHB, SDHC i SDHD podjedinicama", "Samo mutacije u CYP51A1", "Samo G143A na citohrom b genu", "Samo mutacije histidin kinaze", "Najčešće se pominje zamena histidina tirozinom ili argininom na SDHB 272.");
+    q("SDHI", "Fizicke osobine", "Kako je opisan boskalid?", "Bela čvrsta supstanca u kristalima, slabo rastvorljiva u vodi, vrlo niska isparljivost", "Žuta tečnost ekstremno rastvorljiva u vodi", "Svetlo zeleni prah za skladišne bolesti", "Crveni prah za prezimljujuće forme", "Boskalid je translaminaran i kreće se akropetalno.");
+    q("SDHI", "Sta suzbija", "Koji spektar odgovara boskalidu?", "Alternaria solani, Botrytis cinerea, Monilinia spp., Erysiphe necator i Sclerotinia sclerotiorum", "Samo Pythium spp. i Plasmodiophora brassicae", "Samo Erwinia amylovora", "Samo Penicillium digitatum", "Boskalid je široko efikasan u zaštiti brojnih gajenih biljaka.");
+    q("SDHI", "Fizicke osobine", "Šta je karakteristično za flutolanil?", "Beli prah, slabo rastvorljiv u vodi, vrlo postojan u zemljištu, deluje na Basidiomycetes", "Viskozna tečnost koja se kreće floemom", "Crveni prah koji deluje algicidno", "Bezbojni kristal za DMI spektar", "Flutolanil pripada fenil-benzamidima.");
+    q("SDHI", "Fizicke osobine", "Kako je opisan fluksapiroksad?", "Fini kristalni prah, slabo rastvorljiv u vodi, dobro u većini organskih rastvarača", "Ekstremno rastvorljiv beli prah", "Žuta tečnost koja deluje samo parama", "Svetlo zeleni nesistemik", "Fluksapiroksad deluje protektivno, kurativno i eradikativno.");
+    q("SDHI", "Sta suzbija", "Koji spektar je naglašen za fluksapiroksad?", "Pepelnice, Septoria, Puccinia, Fusarium na semenu, Sclerotinia, Rhizoctonia, Alternaria i Cercospora", "Samo plamenjače vinove loze", "Samo alge u vodenim površinama", "Samo bakterije koštičavog voća", "Skripta ga opisuje kao SDHI širokog spektra.");
+    q("SDHI", "Fizicke osobine", "Koja osobina izopirazama omogućava duže zadržavanje u kutikularnom voštanom sloju?", "Visoka lipofilnost", "Ekstremna rastvorljivost u vodi", "Razgradnja u karbendazim", "Samo bazipetalno kretanje", "Visoka lipofilnost daje otpornost na spiranje.");
+    q("SDHI", "Sta suzbija", "Koji patogeni su navedeni za izopirazam?", "Septoria tritici, Puccinia recondita, P. striiformis, Erysiphe graminis i Podosphaera xanthii", "Pythium spp. i Plasmodiophora brassicae isključivo", "Erwinia amylovora isključivo", "Samo Penicillium spp.", "Navodi se i efikasnost protiv Botrytis cinerea, Podosphaera leucotricha i Venturia inaequalis.");
+    q("SDHI", "Fizicke osobine", "Kako je opisan fluopiram?", "Bela praškasta supstanca, niska rastvorljivost u vodi, nizak napon pare", "Viskozna žućkasto-braon tečnost", "Bezbojni kristal ekstremno rastvorljiv u vodi", "Crveni prah za prezimljujuće forme", "Fluopiram ima translaminarnu aktivnost i ograničeno kretanje ksilemom.");
+    q("SDHI", "Sta suzbija", "Koji spektar odgovara fluopiramu?", "Venturia, Podosphaera, Monilinia, Alternaria, Blumeriella, Botrytis i Didymella", "Samo Pseudoperonospora cubensis", "Samo Erwinia amylovora", "Samo alge i bakterije", "Fluopiram se koristi u jabučastom, koštičavom i jagodastom voću protiv truleži, pegavosti i pepelnica.");
+    q("SDHI", "Sta suzbija", "Koja SDHI supstanca iz skripte, iz grupe fenil-okso-etiltiofen amida, cilja Monilinia, Botrytis i Sclerotinia?", "Izofetamid", "Metalaksil-M", "Kaptan", "Propamokarb", "U skripti je naslov loše izdvojen, ali opis odgovara izofetamidu: braonkast prah, fenil-okso-etiltiofen amid.");
+
+    q("QoI", "Mehanizam", "Koji je osnovni mehanizam QoI fungicida?", "Inhibicija mitohondrijalne respiracije vezivanjem za Qo mesto kompleksa III", "Inhibicija RNA sinteze preko uridina", "Inhibicija 3-keto-reduktaze", "Oslobađanje Cu jona iz spora", "QoI blokiraju transport elektrona između citohroma b i c1.");
+    q("QoI", "Mehanizam", "Šta je direktna posledica blokade transporta elektrona kod QoI?", "Zaustavljanje sinteze ATP-a i deficit energije u ćeliji gljive", "Povećanje sinteze ergosterola", "Aktivacija metionina", "Formiranje Bordovske čorbe", "Nedostatak energije najviše pogađa energetski zahtevne faze razvoja.");
+    q("QoI", "Mehanizam", "Na koje faze razvoja QoI posebno dobro deluju?", "Klijanje spora i pokretljivost oospora kod Oomycetes", "Samo formirane simptome posle duge infekcije", "Samo mirovanje semena", "Samo bakterijsku deobu", "Najbolji efekat je preventivno ili u ranoj fazi patogeneze.");
+    q("QoI", "Sta suzbija", "Koji je opšti spektar QoI fungicida?", "Ascomycetes, Basidiomycetes, Deuteromycetes i Oomycetes", "Samo Oomycetes", "Samo bakterije", "Samo Erysiphaceae", "QoI imaju veoma širok spektar.");
+    q("QoI", "Rezistentnost", "Koje mutacije su klasične za rezistentnost na QoI?", "G143A i F129L u citohrom b genu", "H272Y na SDHB i P225F", "CYP51A1 ekspresija", "S34L kod ametoktradina isključivo", "Skripta navodi G143A i F129L kao važne mutacije.");
+    q("QoI", "Rezistentnost", "Koji drugi mehanizam rezistentnosti na QoI je naveden?", "Stvaranje alternativne oksidaze", "Hipersekrecija kreča", "Povećana rastvorljivost u vodi", "Sinteza bakarnih helata", "Alternativna oksidaza preusmerava transport elektrona i izbegava mesto delovanja.");
+    q("QoI", "Rezistentnost", "Kod kojih patogena je u Srbiji detektovana rezistentnost na QoI?", "Venturia inaequalis, Cercospora beticola, Botrytis cinerea i Didymella applanata", "Samo Erwinia amylovora", "Samo Pythium spp.", "Samo Tilletia tritici", "Ove vrste su navedene u skripti.");
+    q("QoI", "Fizicke osobine", "Kako je opisan azoksistrobin?", "Bela čvrsta supstanca, vrlo slabo rastvorljiva u vodi, sistemik koji se kreće ksilemom", "Žuta tečnost koja deluje samo kontaktno", "Crveni prah za prezimljujuće forme", "Bezbojni kristal ekstremno rastvorljiv u vodi", "Azoksistrobin deluje preventivno, kurativno i delimično eradikativno.");
+    q("QoI", "Sta suzbija", "Koji patogeni su navedeni za azoksistrobin?", "Alternaria solani, Monilinia spp., Plasmopara viticola, Erysiphe graminis, Phytophthora infestans i Puccinia spp.", "Samo Penicillium spp. u skladištu", "Samo Erwinia amylovora", "Samo Taphrina deformans", "Azoksistrobin ima širok QoI spektar.");
+    q("QoI", "Fizicke osobine", "Kako je opisan piraklostrobin?", "Bezbojni prah, veoma slabo rastvorljiv u vodi, lokal-sistemičan i translaminaran", "Ekstremno rastvorljiv beli prah", "Viskozna tečnost sa jakim bazipetalnim kretanjem", "Svetlo zeleni nesistemik za seme", "Piraklostrobin ne deluje parama ni u povoljnim uslovima.");
+    q("QoI", "Fizicke osobine", "Zašto je krezoksim-metil prijemčiv za lisnu površinu?", "Zbog izražene lipofilnosti i afiniteta za kutikularne voskove", "Zbog ekstremne rastvorljivosti u vodi", "Zato što prelazi u karbendazim", "Zato što oslobađa Cu jone", "Ko/w logP oko 3,5 daje visok afinitet za kutikularne voskove.");
+    q("QoI", "Sta suzbija", "Na šta krezoksim-metil naročito dobro deluje?", "Prouzrokovače pepelnica kao Podosphaera leucotricha i Uncinula necator", "Samo Phytophthora fragariae na malini", "Samo Erwinia amylovora", "Samo Pythium spp. u rasadu", "Skripta navodi odlične efekte na pepelnice, uz smanjenje primene za Venturia zbog rezistentnosti.");
+    q("QoI", "Fizicke osobine", "Koja osobina je karakteristična za trifloksistrobin?", "Redistribuira se po površini biljnih organa u gasnoj fazi i translaminarni je sistemik", "Ekstremno se rastvara u vodi i ispira kišom", "Nema delovanje na klijanje spora", "Koristi se isključivo kao baktericid", "Trifloksistrobin je otporan na spiranje kišom i ima antisporulativno delovanje.");
+    q("QoI", "Sta suzbija", "Koji spektar je naveden za famoksadon i fenamidon?", "Naročito prouzrokovači plamenjača kao Bremia, Peronospora, Pseudoperonospora, Plasmopara i Phytophthora", "Samo skladišni Penicillium", "Samo pepelnica jabuke", "Samo bakterije", "Oba imaju spektar koji naročito obuhvata plamenjače, uz Alternaria i Septoria.");
+
+    q("QiI i QoSI", "Mehanizam", "Gde deluju QiI fungicidi kao cijazofamid i amisulbrom?", "Na Qi mesto ubikvinon-reduktaze u mitohondrijalnom bc1 kompleksu", "Na C14 demetilazu", "Na histidin kinazu osmotskog puta", "Na beta-tubulin deobnog vretena", "QiI prekidaju respiracioni ciklus vezivanjem za ubikvinon-reduktazu.");
+    q("QiI i QoSI", "Sta suzbija", "Koji je osnovni spektar cijazofamida i amisulbroma?", "Oomycetes i Plasmodiophoromycetes", "Samo skladišne plesni", "Samo rđe strnih žita", "Samo bakterije", "QiI su izrazito efikasni protiv pseudogljiva i plamenjača.");
+    q("QiI i QoSI", "Fizicke osobine", "Kako je opisan cijazofamid?", "Bela praškasta supstanca, slabo rastvorljiva u vodi, dobro u dihlormetanu i acetonu", "Crveni prah rastvorljiv u amonijaku", "Viskozna žućkasto-braon tečnost", "Bezbojni kristal ekstremno rastvorljiv u vodi", "Cijazofamid ima izražena preventivna svojstva, rezidualnost i otpornost na kišu.");
+    q("QiI i QoSI", "Mehanizam", "Na koje faze razvoja Oomycetes deluje cijazofamid?", "Sprečava klijanje i oslobađanje zoospora, formiranje zoosporangija, rast micelije i obrazovanje oospora", "Deluje samo na zrelu miceliju bez efekta na spore", "Deluje samo na bakterijske ćelije", "Deluje samo na deobno vreteno pravih gljiva", "Skripta kaže da deluje inhibitorno u svim fazama razvoja Oomycetes.");
+    q("QiI i QoSI", "Sta suzbija", "Koji patogeni su u spektru cijazofamida?", "Phytophthora infestans, Plasmopara viticola, Pseudoperonospora cubensis, Plasmodiophora sp. i Pythium sp.", "Erysiphe necator i Blumeria graminis isključivo", "Venturia inaequalis bez plamenjača", "Penicillium i Aspergillus isključivo", "Cijazofamid je specifičan peronosporicid.");
+    q("QiI i QoSI", "Fizicke osobine", "Kako je opisan amisulbrom?", "Čvrsta braon supstanca, slabo rastvorljiva u vodi, visok Ko/w i veoma nizak napon pare", "Bela tečnost ekstremno rastvorljiva u vodi", "Žuti elementarni prah", "Svetlo zeleni nesistemik za skladište", "Amisulbrom ima preventivno i lokal-sistemično delovanje i kreće se translaminarno.");
+    q("QiI i QoSI", "Sta suzbija", "Za koje patogene je amisulbrom naročito efikasan?", "Phytophthora infestans i Plasmopara viticola", "Tilletia tritici i Ustilago nuda", "Erwinia amylovora", "Penicillium digitatum", "Najčešće se koristi u krompiru i vinovoj lozi.");
+    q("QiI i QoSI", "Mehanizam", "Šta je fenpikoksamid po poreklu?", "Derivat prirodnog produkta fermentacije Streptomyces sp. koji se vraća u UK-2A", "Derivat bakar-sulfata iz Bordoa", "Produkt razgradnje tiofanat-metila", "Alotropska modifikacija sumpora", "Skripta navodi UK-2A i stabilizaciju sintetičkom modifikacijom.");
+    q("QiI i QoSI", "Mehanizam", "Gde deluje ametoktradin kao QoSI fungicid?", "Na Qo mesto, mesto vezivanja stigmatelina u citohrom bc1 kompleksu", "Na Qp mesto kompleksa II", "Na C14 demetilazu", "Na sintezu metionina", "Zbog specifičnog mesta nema ukrštene rezistentnosti sa QoI fungicidima.");
+    q("QiI i QoSI", "Fizicke osobine", "Kako se ametoktradin ponaša na lisnoj površini?", "Lipofilno se zadržava u epikutikularnom voštanom sloju i formira stabilan protektivni film", "Ekstremno se rastvara u vodi i brzo ispira", "Odmah prelazi u karbendazim", "Kreće se isključivo floemom", "Ametoktradin je tipičan nesistemik i otporan je na spiranje kišom.");
+    q("QiI i QoSI", "Sta suzbija", "Koje plamenjače su navedene za ametoktradin?", "Plasmopara viticola, Pseudoperonospora cubensis, Phytophthora infestans i Bremia lactucae", "Samo Venturia inaequalis", "Samo Botrytis cinerea", "Samo Fusarium spp.", "Ametoktradin suzbija prouzrokovače plamenjača.");
+
+    q("CAA", "Mehanizam", "Šta CAA fungicidi inhibiraju kod pseudogljiva?", "Procese uključene u biosintezu ćelijskog zida", "C14 demetilaciju lanosterola", "Sintezu metionina", "Histidin kinazu osmotskog puta", "Biohemijski mehanizam nije potpuno razjašnjen, ali je vezan za ćelijski zid pseudogljiva.");
+    q("CAA", "Mehanizam", "Na šta CAA fungicidi ne utiču prema skripti?", "Na pražnjenje zoospora iz sporangija niti na njihovu pokretljivost", "Na klijanje citospora i sporangija", "Na rast kličine cevi", "Na rast micelije", "Skripta posebno navodi da ne utiču na pražnjenje i pokretljivost zoospora.");
+    q("CAA", "Mehanizam", "Koje faze CAA inhibiraju?", "Klijanje citospora i sporangija, rast kličine cevi i rast micelije", "Samo formiranje bakterijskih spora", "Samo skladišnu sporulaciju Penicillium", "Samo sintezu metionina", "Tako sprečavaju infekciju u biljnom tkivu.");
+    q("CAA", "Sta suzbija", "Koji je spektar CAA fungicida?", "Plamenjače iz Oomycetes kao Plasmopara viticola, Phytophthora infestans i Pseudoperonospora cubensis", "Samo pepelnice", "Samo skladišne plesni", "Samo bakterije", "CAA su peronosporicidi.");
+    q("CAA", "Rezistentnost", "Kako je opisan rizik rezistentnosti kod CAA?", "Srednji za P. infestans, visok za P. viticola", "Nizak za sve patogene", "Postoji samo kod bakterija", "Ne postoji zbog multi-site mehanizma", "Skripta navodi potrebu za antirezistentnom strategijom i kombinovanjem sa multi-site fungicidima.");
+    q("CAA", "Fizicke osobine", "Kako je opisan dimetomorf?", "Bezbojan kristal, slabo rastvorljiv u vodi, najbolje rastvorljiv u dihloretanu", "Viskozna tečnost žućkasto-braon boje", "Svetlo zeleni prah za skladište", "Beli prah ekstremno rastvorljiv u vodi", "Dimetomorf je hidrološki i termostabilan i slabo isparljiv.");
+    q("CAA", "Fizicke osobine", "Kako se dimetomorf kreće u biljci?", "Lokal-sistemično, translaminarno", "Isključivo gasnom fazom", "Ne ulazi u tkivo ni delimično", "Samo floemom bazipetalno", "Ima preventivno, kurativno i u meri eradikativno delovanje.");
+    q("CAA", "Sta suzbija", "Koje patogene suzbija dimetomorf?", "Plasmopara viticola, Bremia lactucae, Pseudoperonospora cubensis, Phytophthora infestans i P. parasitica", "Botrytis cinerea i Penicillium expansum isključivo", "Erysiphe necator isključivo", "Erwinia amylovora isključivo", "Dimetomorf se uglavnom primenjuje u smešama sa mankozebom.");
+    q("CAA", "Fizicke osobine", "Šta karakteriše iprovalikarb?", "Dobra sistemičnost, akropetalno kretanje apoplastom i dobra pokretljivost u vinovoj lozi", "Isključivo kontaktno delovanje bez kretanja", "Ekstremna isparljivost", "Aktivacija u UK-2A", "Iprovalikarb je valinamid karbamat sa preventivnim, kurativnim i delimično eradikativnim delovanjem.");
+    q("CAA", "Fizicke osobine", "Šta karakteriše bentiavalikarb?", "Visok Ko/w, dugotrajno preventivno i delimično kurativno delovanje, bez izraženog translaminarnog kretanja", "Ekstremna rastvorljivost u vodi i jako sistemično kretanje", "Samo gasna faza", "Samo tretiranje semena protiv Tilletia", "Bentiavalikarb se često primenjuje u smešama sa mankozebom i folpetom.");
+    q("CAA", "Fizicke osobine", "Zašto mandipropamid daje dugotrajnu zaštitu posle folijarne primene?", "Snažno se vezuje za kutikularne voskove i stvara barijeru na površini lista", "Ekstremno se rastvara u vodi", "Pretvara se u karbendazim", "Deluje samo preko korena", "Ova barijera obezbeđuje zaštitu i u uslovima čestih padavina.");
+    q("CAA", "Mehanizam", "Koje razvojne procese mandipropamid inhibira?", "Klijanje spora, rast micelije i sporulaciju", "Samo sintezu metionina", "Samo C14 demetilaciju", "Samo oslobađanje Cu jona", "Mandipropamid je CAA sa snažnim preventivnim i zadovoljavajućim kurativnim delovanjem.");
+
+    q("DMI triazoli i imidazoli", "Mehanizam", "Koji proces inhibiraju DMI fungicidi?", "14 alfa demetilaciju u biosintezi sterola", "Sintezu metionina", "Sintezu RNA preko UTP", "Osmotski HOG put", "DMI sprečavaju odvajanje metil grupe sa C14 lanosterola ili 24-metilendihidrolanosterola.");
+    q("DMI triazoli i imidazoli", "Mehanizam", "Šta je posledica delovanja DMI fungicida?", "Akumulacija metilovanih sterola i prestanak rasta hifa i micelije", "Stvaranje bakarnih jona na površini lista", "Povećano oslobađanje zoospora", "Povećanje pokretljivosti oospora", "Gljive ne mogu iskoristiti nastale sterole za građu ćelijskog zida.");
+    q("DMI triazoli i imidazoli", "Sta suzbija", "Na koje klase patogena deluju DMI fungicidi?", "Ascomycetes, Basidiomycetes i Deuteromycetes", "Samo Oomycetes", "Samo bakterije", "Samo alge", "Spektar obuhvata pepelnice, pegavosti, rđe, truleži i Fusarium.");
+    q("DMI triazoli i imidazoli", "Sta suzbija", "Zašto Oomycetes imaju prirodnu otpornost na DMI fungicide?", "Zbog drugačije građe ćelijskog zida, dominantno beta glukani i celuloza", "Zbog prisustva bakra u ćelijskom zidu", "Zbog nedostatka vode u sporama", "Zbog visokog Ko/w fungicida", "Skripta posebno naglašava prirodnu otpornost pseudogljiva.");
+    q("DMI triazoli i imidazoli", "Rezistentnost", "Koji gen/ciljni enzim je važan za rezistentnost na DMI?", "CYP51 odnosno ERG11, citohrom P-450 za 14 alfa demetilaciju", "Citohrom b G143A isključivo", "Histidin kinaza HOG puta", "Beta-tubulin isključivo", "Mutacije i pojačana ekspresija CYP51A1 navedene su kod V. inaequalis.");
+    q("DMI triazoli i imidazoli", "Fizicke osobine", "Kako je opisan tebukonazol?", "Bezbojni kristali, slabo rastvorljiv u vodi, dobro u organskim rastvaračima, visok Ko/w", "Svetlo zeleni prah za skladište", "Viskozna tečnost ekstremno rastvorljiva u vodi", "Žuti elementarni prah", "Tebukonazol je sistemik sa preventivnim, kurativnim i delimično eradikativnim delovanjem.");
+    q("DMI triazoli i imidazoli", "Sta suzbija", "Koji spektar je naveden za tebukonazol?", "Tilletia, Ustilago, Blumeria, Septoria, Puccinia, Venturia, Podosphaera, Erysiphe, Monilinia i Cercospora", "Samo Phytophthora infestans", "Samo Pythium spp.", "Samo Penicillium u skladištu", "Tebukonazol se koristi folijarno i u zaštiti semena.");
+    q("DMI triazoli i imidazoli", "Fizicke osobine", "Kako je opisan difenokonazol?", "Beličasti kristali, slaba rastvorljivost u vodi, visok Ko/w, dobro u acetonu", "Crveni prah za prezimljujuće forme", "Bela tečnost ekstremno rastvorljiva u vodi", "Žuti prah koji deluje samo kontaktno", "Difenokonazol je sistemik sa preventivnim i kurativnim delovanjem.");
+    q("DMI triazoli i imidazoli", "Sta suzbija", "Koje patogene suzbija difenokonazol?", "Venturia inaequalis, Podosphaera leucotricha, Monilinia sp., Erysiphe necator, Septoria, Mycosphaerella i Alternaria", "Samo Pseudoperonospora cubensis", "Samo alge", "Samo Erwinia amylovora", "Naveden je i za neke patogene koji se prenose semenom.");
+    q("DMI triazoli i imidazoli", "Fizicke osobine", "Kako je opisan miklobutanil?", "Bledo žuta čvrsta supstanca, slabo rastvorljiva u vodi, visok Ko/w", "Viskozna tečnost žućkasto-braon boje", "Svetlo zeleni prah nesistemik", "Beli kristal ekstremno rastvorljiv u vodi", "Miklobutanil je sistemik sa preventivnim i kurativnim delovanjem.");
+    q("DMI triazoli i imidazoli", "Sta suzbija", "Koji spektar je naveden za miklobutanil?", "Venturia spp., Podosphaera leucotricha, Stigmina carpophila, Monilinia, Erysiphe, Puccinia, Phragmidium i Uromyces", "Samo Phytophthora infestans", "Samo Pythium u rasadu", "Samo Erwinia amylovora", "Miklobutanil deluje na Ascomycetes, Basidiomycetes i Deuteromycetes.");
+    q("DMI triazoli i imidazoli", "Fizicke osobine", "Kako je opisan epoksikonazol?", "Bezbojni kristali, slabo rastvorljiv u vodi, dobro u acetonu i dihlormetanu, visok Ko/w", "Žuta tečnost ekstremno rastvorljiva u vodi", "Crveni prah za mineralna ulja", "Svetlo zeleni nesistemik", "Epoksikonazol ima preventivno i kurativno delovanje.");
+    q("DMI triazoli i imidazoli", "Sta suzbija", "Koji patogeni su navedeni za epoksikonazol?", "Blumeria graminis, Puccinia spp., Septoria graminicola i Cercospora beticola", "Plasmopara viticola isključivo", "Pythium spp. isključivo", "Penicillium digitatum isključivo", "Koristi se u žitima, šećernoj repi, uljanoj repici i ukrasnim biljkama.");
+    q("DMI triazoli i imidazoli", "Fizicke osobine", "Kako je opisan ciprokonazol?", "Bezbojna čvrsta supstanca, slabo rastvorljiva u vodi, dobro u acetonu i DMSO", "Crveni prah nerastvorljiv u kiselinama", "Viskozna braon tečnost", "Žuti elementarni prah", "Ciprokonazol je sistemik sa protektivnim, kurativnim i eradikativnim delovanjem.");
+    q("DMI triazoli i imidazoli", "Sta suzbija", "Koji patogeni su navedeni za ciprokonazol?", "Blumeria graminis, Septoria tritici, Cercospora beticola, Erysiphe betae, Podosphaera leucotricha i Sclerotinia sclerotiorum", "Samo Phytophthora infestans", "Samo alge", "Samo bakterije", "Skripta navodi više patogena iz različitih useva.");
+    q("DMI triazoli i imidazoli", "Fizicke osobine", "Kako je opisan imazalil?", "Žućkasti kristali, slabo rastvorljiv u vodi, dobro u organskim rastvaračima, visok Ko/w", "Bela praškasta supstanca ekstremno rastvorljiva u vodi", "Crveni prah za prezimljujuće forme", "Svetlo zeleni prah za osmotski signal", "Imazalil je sistemik sa protektivnim i kurativnim delovanjem.");
+    q("DMI triazoli i imidazoli", "Sta suzbija", "Gde se imazalil dominantno primenjuje?", "U prevenciji bolesti uskladištenog voća i povrća, naročito citrusa", "Isključivo u zaštiti krompira od plamenjače", "Samo u suzbijanju alga u vodi", "Samo u tretiranju vinove loze protiv Plasmopara", "Posebno deluje na Penicillium, Aspergillus i Phoma.");
+    q("DMI triazoli i imidazoli", "Fizicke osobine", "Kako je opisan prohloraz?", "Bezbojni kristali, slabo rastvorljiv u vodi, dobro u organskim rastvaračima, slabo isparljiv", "Viskozna tečnost ekstremno rastvorljiva u vodi", "Žuti prah elementarnog sumpora", "Bakarni plavo-zeleni prah", "Prohloraz se delimično razlaže na sunčevoj svetlosti.");
+    q("DMI triazoli i imidazoli", "Sta suzbija", "Koji spektar je naveden za prohloraz?", "Septoria tritici, Monilinia, Ascochyta, Colletotrichum, Sclerotinia, Alternaria, Cercospora, Erysiphe, Fusarium i Cladobotryum", "Samo Pseudoperonospora cubensis", "Samo alge u ribnjacima", "Samo Erwinia amylovora", "Prohloraz ima protektivno i kurativno delovanje u više useva.");
+
+    q("SBI II i SBI III", "Fizicke osobine", "Kako je opisan spiroksamin?", "Žućkasta tečnost, dobro rastvorljiva u kiseloj sredini, slabo u neutralnoj i alkalnoj", "Beli kristal ekstremno rastvorljiv u vodi", "Svetlo zeleni nesistemik", "Crveni prah za prezimljujuće forme", "Spiroksamin je srednje isparljiv, visokog Ko/w i kreće se akropetalno.");
+    q("SBI II i SBI III", "Mehanizam", "Koji je mehanizam spiroksamina?", "Blokira Δ14 reduktazu i Δ8-Δ7 izomerazu u kasnijim fazama biosinteze ergosterola", "Inhibira sintezu metionina", "Blokira Qi mesto", "Reaguje sa Cu jonima", "Iako deluje u biosintezi sterola, nema ukrštene rezistentnosti sa DMI fungicidima.");
+    q("SBI II i SBI III", "Sta suzbija", "Koji je osnovni spektar spiroksamina?", "Erysiphe necator i Blumeria graminis", "Phytophthora infestans i Plasmopara viticola", "Penicillium digitatum i Aspergillus", "Erwinia amylovora", "Skripta naglašava veoma uzak spektar, pepelnice vinove loze i pšenice.");
+    q("SBI II i SBI III", "Fizicke osobine", "Kako je opisan fenheksamid?", "Beli prah, slabo rastvorljiv u vodi, bolje u organskim rastvaračima, visok Ko/w", "Žuta viskozna tečnost", "Crveni prah rastvorljiv u amonijaku", "Bezbojna tečnost ekstremno rastvorljiva u vodi", "Fenheksamid je specifičan botriticid i ima kratku karencu.");
+    q("SBI II i SBI III", "Mehanizam", "Koji je mehanizam fenheksamida?", "Inhibira 3-keto-reduktazu u procesu C4 demetilacije", "Inhibira C14 demetilaciju kao triazoli", "Inhibira sintezu metionina", "Blokira beta-tubulin", "Tipični je folijarni protektivni fungicid i ne translocira se u biljnom tkivu.");
+    q("SBI II i SBI III", "Sta suzbija", "Koji je spektar fenheksamida?", "Botrytis cinerea, Monilinia spp. i Sclerotinia spp.", "Plamenjače Oomycetes isključivo", "Samo Erysiphe necator", "Samo bakterioze", "Koristi se uglavnom za B. cinerea na jagodastom voću i vinovoj lozi.");
+
+    q("Cimoksanil, ciflufenamid i fosetil-Al", "Fizicke osobine", "Kako je opisan cimoksanil?", "Bezbojni kristali bez mirisa, umereno rastvorljiv u vodi, bolje u organskim rastvaračima", "Crveni prah nerastvorljiv u vodi", "Žuta elementarna supstanca", "Svetlo zeleni nesistemik", "Cimoksanil je lokal-sistemik sa protektivnim i kurativnim delovanjem.");
+    q("Cimoksanil, ciflufenamid i fosetil-Al", "Mehanizam", "Koji je mehanizam cimoksanila u skripti?", "Nepoznat mehanizam delovanja", "Inhibicija C14 demetilacije", "Blokada beta-tubulina", "Inhibicija histidin kinaze", "Skripta ga svrstava u fungicide sa nepoznatim mehanizmom delovanja.");
+    q("Cimoksanil, ciflufenamid i fosetil-Al", "Sta suzbija", "Koji je spektar cimoksanila?", "Oomycetes: Plasmopara viticola, Phytophthora infestans i Pseudoperonospora cubensis", "Samo Botrytis cinerea", "Samo skladišni Penicillium", "Samo rđe", "Cimoksanil ima snažno antisporulativno delovanje, ali kratku rezidualnu aktivnost.");
+    q("Cimoksanil, ciflufenamid i fosetil-Al", "Fizicke osobine", "Kako je opisan ciflufenamid?", "Bela čvrsta supstanca slabog aromatičnog mirisa, nerastvorljiva u vodi, dobro rastvorljiva u organskim rastvaračima", "Viskozna tečnost ekstremno rastvorljiva u vodi", "Crveni prah za prezimljujuće forme", "Bakarni plavo-zeleni prah", "Relativno je isparljiv i može delovati i parama.");
+    q("Cimoksanil, ciflufenamid i fosetil-Al", "Mehanizam", "Šta ciflufenamid inhibira u razvoju pepelnica?", "Formiranje i razvoj haustorija, porast hifa i formiranje konidiofora", "Samo oslobađanje zoospora", "Samo sintezu metionina", "Samo respiraciju na Qp mestu", "Mehanizam je nepoznat, ali se navode efekti na deobu, sterole, lipide, membrane i disanje.");
+    q("Cimoksanil, ciflufenamid i fosetil-Al", "Sta suzbija", "Koji je spektar ciflufenamida?", "Pepelnice iz Erysiphaceae kao Blumeria graminis, Erysiphe necator i Podosphaera leucotricha", "Plamenjače krompira isključivo", "Bakterioze paprike", "Alge u ribnjacima", "Ciflufenamid je lokal-sistemik sa translaminarnim kretanjem.");
+    q("Cimoksanil, ciflufenamid i fosetil-Al", "Fizicke osobine", "Kako je opisan fosetil-aluminijum?", "Beli do svetložuti prah, ekstremno rastvorljiv u vodi, veoma nizak Ko/w", "Crveni prah nerastvorljiv u vodi", "Žuta tečnost koja deluje gasnom fazom", "Svetlo zeleni prah za skladište", "Fosetil-Al je slabo isparljiv i sistemično se kreće u oba pravca.");
+    q("Cimoksanil, ciflufenamid i fosetil-Al", "Mehanizam", "Šta je posebno kod delovanja fosetil-Al u biljci?", "Simulira hipersenzitivnu reakciju i produkciju fitoaleksina", "Pretvara se u karbendazim", "Oslobađa Cu jone iz kreča", "Blokira beta-tubulin", "Pored direktnog uticaja na klijanje spora i miceliju, podstiče odbrambene reakcije biljke.");
+    q("Cimoksanil, ciflufenamid i fosetil-Al", "Sta suzbija", "Koji je spektar fosetil-Al?", "Plamenjače kao P. viticola, P. infestans, P. cubensis, P. humuli i Bremia lactucae, plus Erwinia amylovora", "Samo pepelnice vinove loze", "Samo Botrytis cinerea", "Samo Fusarium na semenu", "Dominantno se primenjuje u vinovoj lozi i tikvenjačama.");
+
+    q("Kvinolini, fenilpiroli, karbamati i anilinopirimidini", "Fizicke osobine", "Kako je opisan kvinoksifen?", "Bezbojna čvrsta supstanca, slabo rastvorljiva u vodi, visok Ko/w i delimično delovanje gasnom fazom", "Bela tečnost ekstremno rastvorljiva u vodi", "Žuti prah elementarnog sumpora", "Svetlo zeleni prah za osmotski put", "Kvinoksifen je sistemik, kreće se akropetalno i bazipetalno i otporan je na kišu.");
+    q("Kvinolini, fenilpiroli, karbamati i anilinopirimidini", "Sta suzbija", "Šta kvinoksifen suzbija?", "Pepelnice kao Erysiphe necator i Blumeria graminis f. sp. tritici i hordei", "Plasmopara viticola isključivo", "Pythium spp. u rasadu", "Erwinia amylovora", "Koristi se za vinovu lozu i strna žita.");
+    q("Kvinolini, fenilpiroli, karbamati i anilinopirimidini", "Fizicke osobine", "Kako je opisan prokvinazid?", "Bela kristalna supstanca, slabo rastvorljiva u vodi, visok Ko/w, lokal-sistemik translaminaran", "Crveni prah za prezimljujuće forme", "Viskozna tečnost dobro rastvorljiva u vodi", "Žuti prah koji prelazi u sulfide", "Prokvinazid ima dugotrajno preventivno i ograničeno kurativno delovanje.");
+    q("Kvinolini, fenilpiroli, karbamati i anilinopirimidini", "Mehanizam", "Kako deluju kvinoksifen i prokvinazid?", "Ometaju prenos signala potreban za diferencijaciju konidija odnosno apresorija", "Inhibiraju sintezu metionina", "Blokiraju beta-tubulin", "Indukuju samo curenje membrane", "Kvinoksifen cilja diferencijaciju konidija, a prokvinazid formiranje apresorija.");
+    q("Kvinolini, fenilpiroli, karbamati i anilinopirimidini", "Fizicke osobine", "Kako je opisan fludioksonil?", "Svetlo zeleni prah, slabo rastvorljiv u vodi, nesistemik sa preventivnim svojstvima", "Bela tečnost ekstremno rastvorljiva u vodi", "Crveni prah za mineralna ulja", "Žuta viskozna tečnost", "Lipofilnost omogućava čvrsto vezivanje za površinski voštani sloj.");
+    q("Kvinolini, fenilpiroli, karbamati i anilinopirimidini", "Mehanizam", "Koji je mehanizam fludioksonila?", "Inhibira histidin kinazu u osmotskom prenosu signala i dovodi do nagomilavanja glicerola", "Inhibira C14 demetilaciju", "Blokira sintezu metionina", "Inhibira ugradnju uridina u UTP", "Poremećaj osmoregulacije može dovesti do pucanja ćelije.");
+    q("Kvinolini, fenilpiroli, karbamati i anilinopirimidini", "Sta suzbija", "Koji spektar je naveden za fludioksonil?", "Botrytis, Sclerotinia, Monilinia, Penicillium, Alternaria, Colletotrichum, Aspergillus, Mucor i semenski patogeni", "Samo Oomycetes", "Samo bakterije", "Samo alge", "Koristi se i za tretiranje semena pšenice, ječma i kukuruza.");
+    q("Kvinolini, fenilpiroli, karbamati i anilinopirimidini", "Fizicke osobine", "Kako je opisan propamokarb?", "Bezbojni higroskopni kristal, odlično rastvorljiv u vodi, sistemik", "Svetlo zeleni prah nesistemik", "Crveni prah nerastvorljiv u vodi", "Beli kristal koji deluje samo na pepelnice", "Usvaja se korenom i listom i translocira ksilemom.");
+    q("Kvinolini, fenilpiroli, karbamati i anilinopirimidini", "Mehanizam", "Kako propamokarb deluje na ćelijsku membranu?", "Utiče na biosintezu fosfolipida i masnih kiselina, izaziva curenje ćelijskog sadržaja", "Blokira C14 demetilaciju", "Inhibira sintezu metionina", "Oslobađa Cu jone", "Deluje kada je u kontaktu sa pseudogljivom tokom rasta, pa je kurativnost ograničena.");
+    q("Kvinolini, fenilpiroli, karbamati i anilinopirimidini", "Sta suzbija", "Koji je spektar propamokarba?", "Oomycetes: Phytophthora, Bremia, Peronospora, Pseudoperonospora i Pythium", "Samo Botrytis i Monilinia", "Samo pepelnice", "Samo bakterije", "Primena je moguća preko zemljišta, zalivanjem, potapanjem, tretiranjem semena i folijarno.");
+    q("Kvinolini, fenilpiroli, karbamati i anilinopirimidini", "Fizicke osobine", "Kako je opisan pirimetanil?", "Bezbojan kristal, slabo rastvorljiv u vodi, dobro u acetonu i organskim rastvaračima, sistemik", "Crveni prah za prezimljujuće forme", "Bela tečnost ekstremno rastvorljiva u vodi", "Žuti elementarni prah", "Pirimetanil se translocira kroz apoplast lista.");
+    q("Kvinolini, fenilpiroli, karbamati i anilinopirimidini", "Fizicke osobine", "Kako je opisan ciprodinil?", "Bež prah slabog mirisa, slabo rastvorljiv u vodi, sistemik sa akropetalnim kretanjem ksilemom", "Viskozna tečnost žućkasto-braon boje", "Crveni prah rastvorljiv u amonijaku", "Svetlo zeleni nesistemik", "Ciprodinil ima preventivnu aktivnost na klijanje spora, haustorije, rast micelije i sporulaciju.");
+    q("Kvinolini, fenilpiroli, karbamati i anilinopirimidini", "Mehanizam", "Koji je mehanizam anilinopirimidina?", "Inhibiraju sintezu metionina i utiču na sekreciju hidrolitičkih enzima", "Inhibiraju C14 demetilaciju", "Blokiraju Qi mesto", "Oslobađaju Cu jone", "Pirimetanil i ciprodinil ometaju penetraciju patogena u biljno tkivo.");
+    q("Kvinolini, fenilpiroli, karbamati i anilinopirimidini", "Sta suzbija", "Koji spektar je naveden za anilinopirimidine?", "Botrytis, Monilinia, Sclerotinia, Alternaria, Venturia, Blumeria, Ascochyta, Aspergillus i Penicillium", "Samo plamenjače", "Samo bakterije", "Samo alge", "Skripta posebno navodi i Venturia inaequalis i Penicillium expansum u kontekstu rezistentnosti.");
+    q("Kvinolini, fenilpiroli, karbamati i anilinopirimidini", "Rezistentnost", "Kod kojih populacija je potvrđena rezistentnost na anilinopirimidine?", "Botrytis cinerea, Venturia inaequalis i Penicillium expansum", "Samo Erwinia amylovora", "Samo Plasmopara halstedii", "Samo Tilletia tritici", "Mehanizam je mutacija na ciljanom mestu delovanja.");
+
+    q("Rezistentnost i strategija", "Rezistentnost", "Kako se definiše rezistentnost gljiva na fungicide?", "Sposobnost rase, soja ili populacije da toleriše doze letalne za normalno osetljive populacije", "Privremeno ispiranje fungicida kišom", "Svaka fitotoksičnost na biljci", "Samo prirodna otpornost Oomycetes na bakar", "Rezistentnost je nasledna i javlja se kao posledica primene pesticida.");
+    q("Rezistentnost i strategija", "Rezistentnost", "Koja su četiri osnovna mehanizma razvoja rezistentnosti?", "Promena mesta delovanja, detoksikacija, hiperekspresija cilja i eliminacija fungicida", "Fotosinteza, transpiracija, respiracija i oplodnja", "Bakar, sumpor, kreč i voda", "Samo mutacije G143A i F129L", "Skripta navodi četiri mehanizma rezistentnosti.");
+    q("Rezistentnost i strategija", "Rezistentnost", "Šta je najčešći mehanizam rezistentnosti?", "Promena mesta delovanja usled mutacija", "Povećana rastvorljivost fungicida u vodi", "Smanjenje količine voska na listu", "Pojava algicidnog efekta", "Mutacije menjaju aminokiselinsku sekvencu i fungicid slabije prepoznaje ciljno mesto.");
+    q("Rezistentnost i strategija", "Rezistentnost", "Koji primer promene ciljnog mesta je naveden za strobilurine?", "G143A i F129L na citohrom b genu", "CYP51A1 kod svih QoI fungicida", "S34L kod bakra", "HOG mutacija kod sumpora", "G143A znači zamenu glicina alaninom, a F129L fenilalanina leucinom.");
+    q("Rezistentnost i strategija", "Rezistentnost", "Kako detoksikacija može smanjiti delovanje fungicida?", "Gljive mogu prevesti molekul fungicida u neaktivan oblik ili izbeći bioaktivaciju pro-fungicida", "Gljive povećaju isparljivost vode na listu", "Fungicid se pretvara u kreč", "Spore se pretvore u bakterije", "Ako bioaktivacija pro-fungicida izostane, fungicidni efekat može oslabiti ili nestati.");
+    q("Rezistentnost i strategija", "Rezistentnost", "Šta znači hiperekspresija ciljnog mesta delovanja?", "Organizam proizvodi više prirodnog supstrata/cilja pa se metabolički proces nastavlja uprkos fungicidu", "Fungicid se ispira kišom", "Biljka stvara više voska", "Patogen gubi sve spore", "Molekuli fungicida se takmiče sa prirodnim supstratom za cilj.");
+    q("Rezistentnost i strategija", "Rezistentnost", "Kako eliminacija fungicida doprinosi rezistentnosti?", "Efluksne pumpe izbacuju dovoljno fungicida iz ćelije da se spreči fungitoksično delovanje", "Fungicid se pretvara u bakar-sulfat", "Biljka formira više plodova", "Povećava se koncentracija fungicida u ćeliji", "Efluksne pumpe uklanjaju ksenobiotike iz ćelije.");
+    q("Rezistentnost i strategija", "Rezistentnost", "Koji faktori patogena povećavaju rizik rezistentnosti?", "Polna faza, policikličnost, velika produkcija spora i nadzemno širenje", "Samo mala produkcija spora", "Samo odsustvo polne faze", "Samo patogeni u zemljištu bez širenja", "Više ciklusa i lakše širenje povećavaju mešanje populacija i nove genotipove.");
+    q("Rezistentnost i strategija", "Rezistentnost", "Koji fungicidi nose veći rizik rezistentnosti?", "Single-site fungicidi, naročito uz čestu primenu i oslanjanje na kurativnost", "Multi-site fungicidi koji se koriste preventivno", "Samo bakarni preparati", "Samo sumpor u prahu", "Specifičan mehanizam i ponovljena primena povećavaju selekcioni pritisak.");
+    q("Rezistentnost i strategija", "Rezistentnost", "Zašto kurativna i eradikativna primena posle simptoma povećava rizik?", "Sistemični fungicid tada često deluje sam, a patogen već ima sporulacione lezije", "Zato što preventivni partner tada deluje jače", "Zato što nema živih patogena", "Zato što se rezistentnost javlja samo bez simptoma", "Postinfekciona primena povećava šansu selekcije otpornih biotipova.");
+    q("Rezistentnost i strategija", "Rezistentnost", "Šta je antirezistentna strategija?", "Skup mera za odlaganje ili sprečavanje pojave rezistentnosti gljiva na fungicide", "Primena jedne aktivne materije više puta zaredom", "Smanjivanje doza da bi patogen preživeo", "Tretiranje samo kada pada jaka kiša", "Strategija obuhvata hemijske i nehemijske mere.");
+    q("Rezistentnost i strategija", "Rezistentnost", "Koji je princip integralne zaštite u antirezistentnoj strategiji?", "Korišćenje nehemijskih mera kao otpornije sorte, uklanjanje inokuluma i biološki preparati", "Oslanjanje samo na kurativni sistemik", "Upotreba subefektivnih doza", "Primena istog mehanizma cele sezone", "Nehemijske mere smanjuju pritisak bolesti i potrebu za fungicidima.");
+    q("Rezistentnost i strategija", "Rezistentnost", "Zašto se sistemični fungicidi kombinuju sa preventivnim?", "Preventivni partner smanjuje selekcioni pritisak i suzbija rezistentne biotipove", "Da bi se povećala ukrštena rezistentnost", "Da bi sistemik delovao isključivo sam", "Da bi se izbegao svaki kontaktni efekat", "Multi-site partner sprečava infekciju i smanjuje oslanjanje na kurativnost sistemika.");
+    q("Rezistentnost i strategija", "Rezistentnost", "Zašto treba primenjivati pune preporučene doze?", "Subefektivne doze favorizuju preživljavanje i razvoj rezistentnih biotipova", "Manje doze uvek bolje sprečavaju rezistentnost", "Doza nema nikakav značaj", "Pune doze su potrebne samo kod bakra", "Skripta posebno upozorava da smanjene doze mogu indukovati otpornost.");
+    q("Rezistentnost i strategija", "Rezistentnost", "Koliko najviše tretiranja u sezoni se preporučuje za fungicide visokog rizika?", "Maksimalno dva tretiranja u toku vegetacione sezone", "Neograničeno", "Samo jedno u životu biljke", "Tačno deset", "Rotacija mehanizama delovanja smanjuje selekcioni pritisak.");
+    q("Rezistentnost i strategija", "Rezistentnost", "Zašto treba izbegavati tretiranje u nepovoljnim meteo-uslovima?", "Gubi se deo aktivne materije pa preostala količina može biti subefektivna", "Zato što tada fungicid postaje sistemičniji", "Zato što se tada rezistentnost ne može razviti", "Zato što kiša uvek povećava dozu", "Spiranje, termodegradacija i zanošenje mogu imati isti efekat kao smanjena doza.");
+
+    var state = {
+      deck: [],
+      index: 0,
+      score: 0,
+      answered: false,
+      selectedTopic: "",
+      selectedFocus: "",
+      selectedCount: "25",
+      missed: []
+    };
+
+    function shuffle(arr) {
+      var copy = arr.slice();
+      for (var i = copy.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = copy[i];
+        copy[i] = copy[j];
+        copy[j] = tmp;
+      }
+      return copy;
+    }
+
+    function uniqueTopics() {
+      var seen = {};
+      var list = [];
+      for (var i = 0; i < QUESTIONS.length; i++) {
+        if (!seen[QUESTIONS[i].topic]) {
+          seen[QUESTIONS[i].topic] = true;
+          list.push(QUESTIONS[i].topic);
+        }
+      }
+      return list.sort();
+    }
+
+    function fillSelects() {
+      var topicSelect = document.getElementById("topicSelect");
+      topicSelect.innerHTML = "";
+      var all = document.createElement("option");
+      all.value = "";
+      all.textContent = "Sve";
+      topicSelect.appendChild(all);
+      var topics = uniqueTopics();
+      for (var i = 0; i < topics.length; i++) {
+        var opt = document.createElement("option");
+        opt.value = topics[i];
+        opt.textContent = topics[i];
+        topicSelect.appendChild(opt);
+      }
+      document.getElementById("bankSize").textContent = QUESTIONS.length + " pitanja";
+    }
+
+    function buildDeck() {
+      var topic = document.getElementById("topicSelect").value;
+      var focus = document.getElementById("focusSelect").value;
+      var count = document.getElementById("countSelect").value;
+      var filtered = [];
+      for (var i = 0; i < QUESTIONS.length; i++) {
+        if (topic && QUESTIONS[i].topic !== topic) continue;
+        if (focus && QUESTIONS[i].focus !== focus) continue;
+        filtered.push(QUESTIONS[i]);
+      }
+      filtered = shuffle(filtered);
+      if (count !== "all") {
+        filtered = filtered.slice(0, parseInt(count, 10));
+      }
+      state.deck = filtered;
+      state.index = 0;
+      state.score = 0;
+      state.answered = false;
+      state.selectedTopic = topic;
+      state.selectedFocus = focus;
+      state.selectedCount = count;
+      state.missed = [];
+    }
+
+    function showPanel(id) {
+      document.getElementById("setupPanel").className = "panel hidden";
+      document.getElementById("quizPanel").className = "panel hidden";
+      document.getElementById("resultPanel").className = "panel result hidden";
+      if (id === "resultPanel") {
+        document.getElementById(id).className = "panel result";
+      } else {
+        document.getElementById(id).className = "panel";
+      }
+    }
+
+    function startQuiz() {
+      buildDeck();
+      if (!state.deck.length) {
+        alert("Nema pitanja za izabrani filter.");
+        return;
+      }
+      showPanel("quizPanel");
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      var item = state.deck[state.index];
+      state.answered = false;
+      document.getElementById("progressText").textContent = "Pitanje " + (state.index + 1) + "/" + state.deck.length;
+      document.getElementById("scoreText").textContent = "Tačno " + state.score;
+      document.getElementById("bar").style.width = Math.round((state.index / state.deck.length) * 100) + "%";
+      document.getElementById("topicPill").textContent = item.topic;
+      document.getElementById("focusPill").textContent = item.focus;
+      document.getElementById("questionText").textContent = item.question;
+      document.getElementById("explain").style.display = "none";
+      document.getElementById("explain").textContent = "";
+      document.getElementById("nextBtn").disabled = true;
+
+      var answers = [{ text: item.correct, ok: true }];
+      for (var i = 0; i < item.wrong.length; i++) {
+        answers.push({ text: item.wrong[i], ok: false });
+      }
+      answers = shuffle(answers);
+      var wrap = document.getElementById("answers");
+      wrap.innerHTML = "";
+      for (var a = 0; a < answers.length; a++) {
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "answer";
+        btn.textContent = answers[a].text;
+        btn.setAttribute("data-ok", answers[a].ok ? "1" : "0");
+        btn.addEventListener("click", chooseAnswer);
+        wrap.appendChild(btn);
+      }
+    }
+
+    function chooseAnswer(evt) {
+      if (state.answered) return;
+      state.answered = true;
+      var btn = evt.currentTarget;
+      var ok = btn.getAttribute("data-ok") === "1";
+      var buttons = document.getElementById("answers").getElementsByTagName("button");
+      for (var i = 0; i < buttons.length; i++) {
+        buttons[i].disabled = true;
+        if (buttons[i].getAttribute("data-ok") === "1") {
+          buttons[i].className = "answer correct";
+        }
+      }
+      if (ok) {
+        state.score += 1;
+      } else {
+        btn.className = "answer wrong";
+        var item = state.deck[state.index];
+        state.missed.push({
+          question: item.question,
+          correct: item.correct,
+          explain: item.explain
+        });
+      }
+      var current = state.deck[state.index];
+      document.getElementById("scoreText").textContent = "Tačno " + state.score;
+      document.getElementById("explain").textContent = current.explain;
+      document.getElementById("explain").style.display = "block";
+      document.getElementById("nextBtn").disabled = false;
+    }
+
+    function nextQuestion() {
+      if (!state.answered) return;
+      state.index += 1;
+      if (state.index >= state.deck.length) {
+        finishQuiz();
+      } else {
+        renderQuestion();
+      }
+    }
+
+    function finishQuiz() {
+      document.getElementById("bar").style.width = "100%";
+      showPanel("resultPanel");
+      var percent = Math.round((state.score / state.deck.length) * 100);
+      document.getElementById("resultTitle").textContent = state.score + "/" + state.deck.length + " (" + percent + "%)";
+      document.getElementById("resultText").textContent = "Tema: " + (state.selectedTopic || "sve") + " | Fokus: " + (state.selectedFocus || "sve");
+      var review = document.getElementById("review");
+      review.innerHTML = "";
+      if (!state.missed.length) {
+        var perfect = document.createElement("div");
+        perfect.className = "review-item";
+        perfect.textContent = "Sve tačno.";
+        review.appendChild(perfect);
+        return;
+      }
+      for (var i = 0; i < state.missed.length; i++) {
+        var div = document.createElement("div");
+        div.className = "review-item";
+        var s = document.createElement("strong");
+        s.textContent = state.missed[i].question;
+        var p1 = document.createElement("div");
+        p1.textContent = "Tačno: " + state.missed[i].correct;
+        var p2 = document.createElement("div");
+        p2.textContent = state.missed[i].explain;
+        div.appendChild(s);
+        div.appendChild(p1);
+        div.appendChild(p2);
+        review.appendChild(div);
+      }
+    }
+
+    function restartSame() {
+      document.getElementById("topicSelect").value = state.selectedTopic;
+      document.getElementById("focusSelect").value = state.selectedFocus;
+      document.getElementById("countSelect").value = state.selectedCount;
+      startQuiz();
+    }
+
+    function backToSetup() {
+      showPanel("setupPanel");
+    }
+
+    document.getElementById("startBtn").addEventListener("click", startQuiz);
+    document.getElementById("nextBtn").addEventListener("click", nextQuestion);
+    document.getElementById("restartBtn").addEventListener("click", restartSame);
+    document.getElementById("newQuizBtn").addEventListener("click", backToSetup);
+    document.getElementById("sameQuizBtn").addEventListener("click", restartSame);
+
+    fillSelects();
+  </script>
+</body>
+</html>
