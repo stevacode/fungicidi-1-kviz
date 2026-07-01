@@ -1,0 +1,632 @@
+<!doctype html>
+<html lang="sr-Latn">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fungicidi 1 - vodjeno ucenje</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      background: #f5f7f6;
+      color: #172428;
+      letter-spacing: 0;
+    }
+    .app {
+      min-height: 100vh;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 0;
+    }
+    h1 {
+      margin: 0;
+      font-size: 24px;
+      line-height: 1.12;
+    }
+    .sub {
+      margin-top: 4px;
+      color: #52666a;
+      font-weight: 650;
+      line-height: 1.3;
+    }
+    .badge {
+      background: #fff;
+      border: 1px solid #ccd9d7;
+      border-radius: 8px;
+      padding: 8px 10px;
+      color: #0b6f6a;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .panel {
+      background: #fff;
+      border: 1px solid #d7e1df;
+      border-radius: 8px;
+      padding: 14px;
+      box-shadow: 0 10px 24px rgba(23, 36, 40, 0.08);
+    }
+    .path {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .step {
+      border: 1px solid #d7e1df;
+      background: #fbfdfc;
+      border-radius: 8px;
+      padding: 10px;
+      min-height: 74px;
+    }
+    .step strong {
+      display: block;
+      margin-bottom: 4px;
+      color: #172428;
+    }
+    .step span {
+      display: block;
+      color: #596c70;
+      font-size: 13px;
+      line-height: 1.25;
+    }
+    .setup {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      align-items: end;
+    }
+    label {
+      display: block;
+      font-size: 12px;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: #53676a;
+      margin-bottom: 6px;
+    }
+    select, button {
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid #b9c9c7;
+      border-radius: 8px;
+      background: #fff;
+      color: #172428;
+      font-size: 16px;
+      padding: 10px 12px;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+    select {
+      background-image: linear-gradient(45deg, transparent 50%, #0b6f6a 50%), linear-gradient(135deg, #0b6f6a 50%, transparent 50%);
+      background-position: calc(100% - 18px) 20px, calc(100% - 12px) 20px;
+      background-size: 6px 6px, 6px 6px;
+      background-repeat: no-repeat;
+      padding-right: 34px;
+    }
+    button {
+      font-weight: 800;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .primary { background: #0b6f6a; color: #fff; border-color: #0b6f6a; }
+    .secondary { background: #f8fbfa; color: #315f5a; }
+    .warm { background: #b95000; color: #fff; border-color: #b95000; }
+    .ghost { background: #fff; color: #315f5a; }
+    .quiz-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .meter {
+      height: 10px;
+      background: #e4ecea;
+      border-radius: 999px;
+      overflow: hidden;
+      margin: 8px 0 14px;
+    }
+    .bar { height: 100%; width: 0%; background: #b95000; transition: width 160ms ease; }
+    .meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .pill {
+      background: #e9f1f0;
+      color: #315f5a;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .pill.level-prolaz { background: #e6f4ea; color: #1f5d33; }
+    .pill.level-ispit { background: #fff3df; color: #8a4b00; }
+    .pill.level-tesko { background: #fae8e5; color: #7d2f26; }
+    .question {
+      font-size: 22px;
+      line-height: 1.32;
+      font-weight: 850;
+      margin: 8px 0 14px;
+    }
+    .answers { display: grid; gap: 10px; }
+    .answer {
+      min-height: 54px;
+      text-align: left;
+      line-height: 1.25;
+      font-weight: 750;
+      border-color: #cad8d6;
+    }
+    .answer.correct { background: #e6f4ea; border-color: #2f7b45; color: #1f5d33; }
+    .answer.wrong { background: #fae8e5; border-color: #a74435; color: #7d2f26; }
+    .reveal {
+      display: none;
+      margin-top: 12px;
+      padding: 12px;
+      border-left: 4px solid #0b6f6a;
+      background: #eef7f5;
+      border-radius: 6px;
+      line-height: 1.45;
+    }
+    .reveal strong { display: block; margin-bottom: 5px; }
+    .actions {
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+    .hidden { display: none; }
+    .result h2 { margin: 0 0 8px; font-size: 24px; }
+    .review {
+      margin-top: 12px;
+      display: grid;
+      gap: 10px;
+    }
+    .review-item {
+      border: 1px solid #d9e3e1;
+      border-radius: 8px;
+      padding: 10px;
+      background: #fbfdfd;
+      line-height: 1.4;
+    }
+    .review-item strong { display: block; margin-bottom: 4px; }
+    @media (max-width: 800px) {
+      .setup { grid-template-columns: 1fr; }
+      .path { grid-template-columns: 1fr 1fr; }
+      .quiz-head { flex-direction: column; align-items: stretch; }
+      .actions { grid-template-columns: 1fr; }
+      .question { font-size: 20px; }
+      h1 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div>
+        <h1>Fungicidi 1</h1>
+        <div class="sub">Vodjeno ucenje za ispit</div>
+      </div>
+      <div class="badge" id="bankSize"></div>
+    </header>
+
+    <section class="panel" id="setupPanel">
+      <div class="path">
+        <div class="step"><strong>1. Ucenje</strong><span>Procita pitanje, vidi odgovor i objasnjenje.</span></div>
+        <div class="step"><strong>2. Prolaz</strong><span>Osnovno: grupa, mehanizam, sta suzbija.</span></div>
+        <div class="step"><strong>3. Ispit</strong><span>Prepoznavanje i vazne razlike izmedju supstanci.</span></div>
+        <div class="step"><strong>4. Greske</strong><span>Ponavlja samo promasena pitanja.</span></div>
+      </div>
+      <div class="setup">
+        <div>
+          <label for="modeSelect">Rezim</label>
+          <select id="modeSelect">
+            <option value="ucenje">Ucenje</option>
+            <option value="prolaz">Prolaz</option>
+            <option value="ispit">Ispit</option>
+            <option value="tesko">Tesko</option>
+            <option value="greske">Samo greske</option>
+            <option value="sve">Sve</option>
+          </select>
+        </div>
+        <div>
+          <label for="topicSelect">Tema</label>
+          <select id="topicSelect"></select>
+        </div>
+        <div>
+          <label for="focusSelect">Fokus</label>
+          <select id="focusSelect">
+            <option value="">Sve</option>
+            <option value="Mehanizam">Mehanizam</option>
+            <option value="Fizicke osobine">Fizicke osobine</option>
+            <option value="Sta suzbija">Sta suzbija</option>
+            <option value="Rezistentnost">Rezistentnost</option>
+          </select>
+        </div>
+        <div>
+          <label for="countSelect">Broj</label>
+          <select id="countSelect">
+            <option value="20">20</option>
+            <option value="40">40</option>
+            <option value="80">80</option>
+            <option value="all">Sve</option>
+          </select>
+        </div>
+        <button class="primary" id="startBtn" type="button">Start</button>
+      </div>
+    </section>
+
+    <section class="panel hidden" id="quizPanel">
+      <div class="quiz-head">
+        <div id="progressText"></div>
+        <div id="scoreText"></div>
+      </div>
+      <div class="meter"><div class="bar" id="bar"></div></div>
+      <div class="meta">
+        <span class="pill" id="modePill"></span>
+        <span class="pill" id="topicPill"></span>
+        <span class="pill" id="focusPill"></span>
+        <span class="pill" id="levelPill"></span>
+      </div>
+      <div class="question" id="questionText"></div>
+      <div class="answers" id="answers"></div>
+      <div class="reveal" id="reveal"></div>
+      <div class="actions">
+        <button class="secondary" id="restartBtn" type="button">Ponovo</button>
+        <button class="ghost" id="markBtn" type="button">Ne znam</button>
+        <button class="primary" id="nextBtn" type="button">Dalje</button>
+      </div>
+    </section>
+
+    <section class="panel result hidden" id="resultPanel">
+      <h2 id="resultTitle"></h2>
+      <div id="resultText"></div>
+      <div class="actions">
+        <button class="secondary" id="newQuizBtn" type="button">Pocetak</button>
+        <button class="warm" id="mistakesBtn" type="button">Greske</button>
+        <button class="primary" id="sameQuizBtn" type="button">Isti rezim</button>
+      </div>
+      <div class="review" id="review"></div>
+    </section>
+  </div>
+
+  <script>
+    var QUESTIONS = [{"id":1,"topic":"Bakar","focus":"Mehanizam","question":"Na čemu se zasniva fungicidna aktivnost bakarnih jedinjenja?","correct":"Na denaturaciji proteinskih delova enzima gljiva","wrong":["Na inhibiciji sinteze metionina","Na blokadi Qo mesta u kompleksu III","Na inhibiciji 3-keto-reduktaze"],"explain":"Bakarni joni reaguju sa grupama u proteinima enzima i čine ih neaktivnim.","level":"prolaz","priority":-20,"topicIndex":0},{"id":2,"topic":"Bakar","focus":"Mehanizam","question":"Kako nerastvorni bakarni oblik prelazi u aktivan rastvorljiv oblik?","correct":"U kontaktu sa eksudatima spora gljiva oslobađaju se bakarni joni","wrong":["Isključivo pod dejstvom UV svetla nastaje karbendazim","U biljci se pretvara u UK-2A","Alkalije ga pretvaraju u metionin"],"explain":"Eksudati spora omogućavaju oslobađanje Cu jona koji deluju na enzime.","level":"prolaz","priority":-20,"topicIndex":0},{"id":3,"topic":"Bakar","focus":"Mehanizam","question":"Koje enzimske grupe su naročito osetljive na Cu jone?","correct":"Sulfhidrilne SH grupe","wrong":["Metoksi-karbamatne grupe","Sterolne C14 grupe","Glukanske beta veze"],"explain":"Skripta posebno naglašava enzime sa SH grupom kao najosetljivije.","level":"prolaz","priority":-20,"topicIndex":0},{"id":4,"topic":"Bakar","focus":"Sta suzbija","question":"Koji spektar je karakterističan za neorganska jedinjenja bakra?","correct":"Širok spektar u voćarstvu, vinogradarstvu, ratarstvu, povrtarstvu i ukrasnom bilju","wrong":["Samo pepelnice na vinovoj lozi","Samo skladišne bolesti citrusa","Samo fuzarioze strnih žita"],"explain":"Bakarna jedinjenja su širokog spektra i koriste se u više proizvodnji.","level":"prolaz","priority":-15,"topicIndex":0},{"id":5,"topic":"Bakar","focus":"Sta suzbija","question":"Koji patogeni su navedeni u spektru bakarnih jedinjenja?","correct":"Plasmopara viticola, Phytophthora infestans, Venturia spp. i Taphrina deformans","wrong":["Tilletia tritici, Ustilago nuda i Fusarium spp. isključivo","Botrytis cinerea, ali bez bakterija i plamenjača","Samo Erysiphe necator i Blumeria graminis"],"explain":"U skripti su navedene plamenjače, krastavost, Taphrina, Alternaria, Monilinia, Cercospora i dr.","level":"prolaz","priority":-20,"topicIndex":0},{"id":6,"topic":"Bakar","focus":"Sta suzbija","question":"Na koje bakterije bakarna jedinjenja ispoljavaju toksično delovanje?","correct":"Erwinia amylovora, Pseudomonas syringae i Xanthomonas euvesicatoria","wrong":["Clavibacter, Agrobacterium i Rhizobium","Bacillus subtilis, Streptomyces i Azotobacter","Samo Plasmodiophora brassicae"],"explain":"Bakar ima i baktericidni značaj u zaštiti bilja.","level":"tesko","priority":-15,"topicIndex":0},{"id":7,"topic":"Bakar","focus":"Fizicke osobine","question":"Od čega se sastoji Bordovska čorba?","correct":"Od bakar-sulfata i kalcijum-hidroksida","wrong":["Od sumpora i kalijum-bikarbonata","Od mankozeba i metalaksila","Od folpeta i fosetil-aluminijuma"],"explain":"Bordovska čorba je smeša bakar-sulfata i kreča, odnosno kalcijum-hidroksida.","level":"prolaz","priority":-5,"topicIndex":0},{"id":8,"topic":"Bakar","focus":"Mehanizam","question":"Zašto se kreč dodaje u rastvor bakar-sulfata kod Bordovske čorbe?","correct":"Da spreči prebrzo oslobađanje Cu jona i smanji fitotoksičnost","wrong":["Da poveća sistemično kretanje ksilemom","Da aktivira QoI mehanizam","Da pretvori bakar u sumpor-dioksid"],"explain":"Samo bakar deluje fungicidno, a kreč smanjuje rizik od fitotoksičnih efekata.","level":"tesko","priority":-20,"topicIndex":0},{"id":9,"topic":"Bakar","focus":"Fizicke osobine","question":"Koje osobine najbolje opisuju bakar-sulfat?","correct":"Kristalna supstanca intenzivno plave boje, dobro rastvorljiva u vodi","wrong":["Crveni prah nerastvorljiv u vodi i foto nestabilan","Viskozna žućkasto-braon tečnost","Svetlo zeleni prah, nesistemik i lipofilan"],"explain":"Bakar-sulfat je plavi kamen i jedini bakarni oblik iz skripte koji se dobro rastvara u vodi.","level":"prolaz","priority":-10,"topicIndex":0},{"id":10,"topic":"Bakar","focus":"Sta suzbija","question":"Za šta se bakar-sulfat može koristiti zbog algicidnog delovanja?","correct":"Za suzbijanje algi u bazenima, jezerima, ribnjacima i drugim vodenim površinama","wrong":["Za suzbijanje pepelnice pšenice u klasanju","Za tretiranje skladišnih citrusa protiv Penicillium spp.","Za isključivo suzbijanje Sclerotinia sclerotiorum"],"explain":"Skripta posebno navodi algicidno delovanje bakar-sulfata.","level":"prolaz","priority":-20,"topicIndex":0},{"id":11,"topic":"Bakar","focus":"Fizicke osobine","question":"Kako je opisan bakar-oksihlorid?","correct":"Čvrsta praškasta plavičasto-zelena supstanca, praktično nerastvorljiva u vodi","wrong":["Bezbojna viskozna tečnost, lako rastvorljiva u vodi","Žuti prah koji se dobro rastvara u ugljen-disulfidu","Beli kristal sa ekstremno visokom rastvorljivošću u vodi"],"explain":"Bakar-oksihlorid je plavičasto-zelen prah i praktično je nerastvorljiv u vodi.","level":"ispit","priority":-10,"topicIndex":0},{"id":12,"topic":"Bakar","focus":"Fizicke osobine","question":"Sa čime bakar-oksihlorid nije kompatibilan?","correct":"Sa organofosfatima, karbamatima i sumporno-krečnom čorbom","wrong":["Sa mankozebom i Cu-oksihloridom","Sa svim multi-site fungicidima bez izuzetka","Sa vodom, jer se u njoj potpuno razlaže"],"explain":"Skripta navodi nekompatibilnost sa organofosfatima, karbamatima i sumporno-krečnom čorbom.","level":"ispit","priority":-5,"topicIndex":0},{"id":13,"topic":"Bakar","focus":"Fizicke osobine","question":"Zašto je bakar-oksid crvene boje?","correct":"Zato što je bakar jednovalentan u Cu2O","wrong":["Zato što sadrži maneb i cink","Zato što prelazi u karbendazim","Zato što sadrži sumpor u koloidnom obliku"],"explain":"Bakar-oksid je Cu2O, a crvena boja je vezana za jednovalentni bakar.","level":"ispit","priority":-5,"topicIndex":0},{"id":14,"topic":"Bakar","focus":"Sta suzbija","question":"U kojoj primeni se danas navodi bakar-oksid?","correct":"U gotovim smešama sa mineralnim uljima za prezimljujuće forme patogena","wrong":["Samo za skladišne bolesti citrusa","Za isključivo suzbijanje pepelnica u cvetanju jabuke","Za inhibiciju metionina kod Botrytis cinerea"],"explain":"Naveden je za prezimljujuće forme kao Venturia pyrina i Taphrina deformans.","level":"prolaz","priority":-15,"topicIndex":0},{"id":15,"topic":"Bakar","focus":"Fizicke osobine","question":"Koje osobine odgovaraju bakar-hidroksidu?","correct":"Čvrsta praškasta plavo-zelena supstanca, slabo rastvorljiva u vodi","wrong":["Bezbojni kristali koji se dobro rastvaraju u vodi","Braonkasta tečnost visokog napona pare","Žuta supstanca koja se primenjuje samo u elementarnom stanju"],"explain":"Bakar-hidroksid je plavo-zelen prah i često se koristi kao baktericid.","level":"ispit","priority":-10,"topicIndex":0},{"id":16,"topic":"Bakar","focus":"Sta suzbija","question":"Za šta se koristi bakar-hidroksid?","correct":"Za plamenjače, pegavosti, Alternaria sp., Septoria sp. i druga oboljenja","wrong":["Samo za Penicillium u skladištu","Samo za rđe strnih žita","Samo za Botrytis cinerea u berbi"],"explain":"Skripta ga vezuje za plamenjače, pegavosti i baktericidnu primenu.","level":"prolaz","priority":-20,"topicIndex":0},{"id":17,"topic":"Bakar","focus":"Fizicke osobine","question":"Kada bakar-hidroksid može biti fitotoksičan?","correct":"U uslovima hladnog i vlažnog vremena","wrong":["Samo pri temperaturama iznad 35 C u suvom vremenu","Isključivo ako se primeni u zemljište","Nikada, jer je potpuno netoksičan"],"explain":"U skripti je posebno naglašena fitotoksičnost u hladnom i vlažnom vremenu.","level":"tesko","priority":-5,"topicIndex":0},{"id":18,"topic":"Sumpor","focus":"Fizicke osobine","question":"U kom stanju se sumpor primenjuje kao fungicid?","correct":"U elementarnom stanju","wrong":["Isključivo kao organski sistemik","Samo kao bakarni helat","Kao derivat metionina"],"explain":"Sumpor se primenjuje u elementarnom stanju.","level":"prolaz","priority":-10,"topicIndex":1},{"id":19,"topic":"Sumpor","focus":"Fizicke osobine","question":"Koja su dva tipa formulacije sumpora navedena u skripti?","correct":"Sumporni prah i kvašljivi sumpor","wrong":["EC i granule za zemljište","Bordovska čorba i bakar-oksihlorid","Samo vodeni rastvor"],"explain":"Dostupan je kao sumporni prah i kvašljivi sumpor.","level":"prolaz","priority":-5,"topicIndex":1},{"id":20,"topic":"Sumpor","focus":"Fizicke osobine","question":"Koja je približna tačka topljenja sumpora iz skripte?","correct":"115 C","wrong":["50 C","220 C","413 C"],"explain":"U skripti je navedeno 115 C.","level":"ispit","priority":-5,"topicIndex":1},{"id":21,"topic":"Sumpor","focus":"Fizicke osobine","question":"Kako se sumpor ponaša u vodi i ugljen-disulfidu?","correct":"Nerastvorljiv je u vodi, a dobro rastvorljiv u ugljen-disulfidu","wrong":["Dobro se rastvara u vodi, a nerastvorljiv je u ugljen-disulfidu","Ekstremno je rastvorljiv u vodi","U vodi se odmah pretvara u karbendazim"],"explain":"Sumpor je nerastvorljiv u vodi, a dobro se rastvara u CS2.","level":"ispit","priority":-5,"topicIndex":1},{"id":22,"topic":"Sumpor","focus":"Fizicke osobine","question":"Šta se dešava sa sumporom u prisustvu jakih alkalija?","correct":"Obrazuju se sulfidi","wrong":["Nastaje UK-2A","Nastaje Bordovska čorba","Nastaje etilen-bis-izotiocijanat"],"explain":"Skripta navodi nastanak sulfida u prisustvu jakih alkalija.","level":"ispit","priority":-10,"topicIndex":1},{"id":23,"topic":"Sumpor","focus":"Mehanizam","question":"Koji oksidi sumpora se povezuju sa njegovim fungicidnim delovanjem?","correct":"Sumpor-dioksid i sumpor-trioksid","wrong":["Azot-monoksid i azot-dioksid","Ugljen-monoksid i ugljen-dioksid","Bakar-oksid i bakar-hidroksid"],"explain":"SO2 i SO3 deluju kao jaka oksidaciona sredstva i narušavaju redoks sisteme.","level":"prolaz","priority":-20,"topicIndex":1},{"id":24,"topic":"Sumpor","focus":"Mehanizam","question":"Prema teoriji direktnog delovanja, kako sumpor remeti metabolizam gljiva?","correct":"Ponaša se kao akceptor vodonika i remeti hidrogenaciju i dehidrogenaciju","wrong":["Vezuje se za C14 demetilazu kao DMI","Inhibira sintezu metionina","Blokira histidin kinazu osmotskog puta"],"explain":"Sumpor se opisuje kao akceptor H2 i konkurent u elektronskom transportu.","level":"prolaz","priority":-20,"topicIndex":1},{"id":25,"topic":"Sumpor","focus":"Mehanizam","question":"Zašto su čestice koloidnog sumpora važne kod pepelnica?","correct":"Ponašaju se kao mikro sočiva i termalno oštećuju epifitnu miceliju","wrong":["Pretvaraju se u kalcijum-hidroksid na listu","Indukuju CYP51A1 ekspresiju","Razlažu se u karbendazim u zemljištu"],"explain":"Mikro-sočiva fokusiraju sunčevu svetlost i dovode do kauterizacije hifa.","level":"prolaz","priority":-20,"topicIndex":1},{"id":26,"topic":"Sumpor","focus":"Fizicke osobine","question":"Koja je optimalna temperatura primene sumpora?","correct":"18-28 C","wrong":["0-8 C","30-40 C","Samo ispod 16 C"],"explain":"Ispod 16 C deluje slabije, a iznad 30 C može biti fitotoksičan.","level":"tesko","priority":-5,"topicIndex":1},{"id":27,"topic":"Sumpor","focus":"Sta suzbija","question":"Koji je najvažniji spektar sumpora?","correct":"Pepelnice iz familije Erysiphaceae i grinje","wrong":["Samo plamenjače iz Oomycetes","Samo bakterijske plamenjače","Samo skladišne plesni citrusa"],"explain":"Sumpor suzbija pepelnice i ima akaricidno delovanje.","level":"prolaz","priority":-15,"topicIndex":1},{"id":28,"topic":"Sumpor","focus":"Sta suzbija","question":"Koja je napomena za sumpor u jabuci?","correct":"Ne primenjivati u toku fenofaze cvetanja","wrong":["Uvek primenjivati samo u cvetanju","Koristiti samo za dezinfekciju alata","Mešati sa jakim alkalijama"],"explain":"Skripta naglašava da se ne koristi u jabuci tokom cvetanja.","level":"prolaz","priority":-15,"topicIndex":1},{"id":29,"topic":"Ditiokarbamati","focus":"Sta suzbija","question":"Koje ditiokarbamate navodi skripta?","correct":"Mankozeb, ciram i metiram","wrong":["Kaptan, folpet i kaptafol","Metalaksil, benalaksil i mefenoksam","Pirimetanil, ciprodinil i fludioksonil"],"explain":"U ovoj grupi su mankozeb, ciram i metiram.","level":"prolaz","priority":-15,"topicIndex":2},{"id":30,"topic":"Ditiokarbamati","focus":"Mehanizam","question":"Kako ditiokarbamati deluju na enzime gljiva?","correct":"Kao helatni agensi reaguju sa tiol SH grupama","wrong":["Inhibiraju C14 demetilaciju lanosterola","Blokiraju Qi mesto citohrom bc1 kompleksa","Indukuju samo fitoaleksine bez direktnog delovanja"],"explain":"Osnov je reakcija sa tiol grupama i inhibicija sulfhidrilnih enzima.","level":"prolaz","priority":-20,"topicIndex":2},{"id":31,"topic":"Ditiokarbamati","focus":"Mehanizam","question":"Zašto se mankozeb može smatrati pro-fungicidom?","correct":"Posle izlaganja vodi i UV svetlu nastaju toksični izotiocijanatni metaboliti","wrong":["U biljci prelazi u karbendazim","U zemljištu se vraća u UK-2A","U vodi oslobađa sumpor-trioksid"],"explain":"Mankozeb se razgrađuje do metabolita koji ometaju enzime sa SH grupom.","level":"tesko","priority":-25,"topicIndex":2},{"id":32,"topic":"Ditiokarbamati","focus":"Fizicke osobine","question":"Šta je mankozeb po sastavu?","correct":"Kompleksno jedinjenje maneba sa cinkom, sa Mn i Zn","wrong":["Bakar-sulfat sa kalcijum-hidroksidom","Cijano-imidazolni peronosporicid","Hidroksianilidni botriticid"],"explain":"Skripta navodi mankozeb kao kompleks maneba sa Zn, 20% Mn i 2,5% Zn.","level":"ispit","priority":-10,"topicIndex":2},{"id":33,"topic":"Ditiokarbamati","focus":"Fizicke osobine","question":"Kako se mankozeb ponaša posle deponovanja na list?","correct":"Ostaje na površini lista i ne prodire kroz kutikulu","wrong":["Brzo se translocira ksilemom i floemom","Isključivo deluje gasnom fazom","Prodire u protoplast pšenice i prelazi u UK-2A"],"explain":"Mankozeb je multi-site kontaktni fungicid.","level":"ispit","priority":-10,"topicIndex":2},{"id":34,"topic":"Ditiokarbamati","focus":"Sta suzbija","question":"Koji patogeni su tipični za primenu mankozeba?","correct":"Venturia inaequalis, Plasmopara viticola, Phytophthora infestans i Alternaria solani","wrong":["Samo Penicillium i Aspergillus u skladištu","Samo Erysiphe necator u vinovoj lozi","Samo Tilletia i Ustilago na semenu"],"explain":"Mankozeb je širokog spektra i važan partner u zaštiti više kultura.","level":"prolaz","priority":-20,"topicIndex":2},{"id":35,"topic":"Ditiokarbamati","focus":"Rezistentnost","question":"Koja je antirezistentna uloga mankozeba?","correct":"Čest je partner sistemičnim fungicidima visokog rizika","wrong":["Sam se sme koristiti neograničeno kao single-site fungicid","Koristi se samo posle vidljivih simptoma","Povećava selekcioni pritisak ako se meša sa bakrom"],"explain":"Zbog multi-site delovanja smanjuje rizik kada je partner sistemicima.","level":"tesko","priority":0,"topicIndex":2},{"id":36,"topic":"Ditiokarbamati","focus":"Fizicke osobine","question":"Kako je opisan ciram?","correct":"Bezbojna praškasta supstanca, slabo rastvorljiva u vodi, dobro rastvorljiva u hloroformu i acetonu","wrong":["Bela viskozna tečnost rastvorljiva u heksanu","Crveni prah nerastvorljiv u vodi i amonijaku","Svetlo zeleni prah sa izrazitom sistemičnošću"],"explain":"Ciram je bezbojan prah i ima repelentno dejstvo za ptice i glodare.","level":"ispit","priority":-10,"topicIndex":2},{"id":37,"topic":"Ditiokarbamati","focus":"Sta suzbija","question":"Koja primena cirama je posebno istaknuta?","correct":"Suzbijanje Taphrina deformans, kovrdžavosti lista breskve","wrong":["Suzbijanje Pythium spp. zalivanjem rasada","Suzbijanje Erwinia amylovora u jabuci","Suzbijanje Botrytis cinerea u berbi jagode"],"explain":"Ciram dobro suzbija T. deformans i ima repelentno dejstvo.","level":"prolaz","priority":-20,"topicIndex":2},{"id":38,"topic":"Ditiokarbamati","focus":"Fizicke osobine","question":"Kako je opisan metiram?","correct":"Žuta praškasta supstanca, nerastvorljiva u vodi, nizak Ko/w","wrong":["Bezbojni kristal ekstremno rastvorljiv u vodi","Viskozna tečnost žućkasto-braon boje","Crveni prah koji se koristi samo sa mineralnim uljima"],"explain":"Metiram je žuti prah, slabo se rastvara i ima nizak podeoni koeficijent.","level":"tesko","priority":-10,"topicIndex":2},{"id":39,"topic":"Ditiokarbamati","focus":"Sta suzbija","question":"Šta metiram posebno dobro suzbija?","correct":"Bolesti tipa plamenjača kao P. viticola, P. infestans i P. cubensis","wrong":["Samo skladišne truleži citrusa","Isključivo rđe ruže","Samo pepelnice bez plamenjača"],"explain":"Skripta naglašava metiram kao dobar za plamenjače.","level":"prolaz","priority":-20,"topicIndex":2},{"id":40,"topic":"Ftalimidi i ditianon","focus":"Sta suzbija","question":"Koja jedinjenja pripadaju ftalimidima?","correct":"Kaptan, folpet i kaptafol","wrong":["Mankozeb, metiram i ciram","Ciazofamid, amisulbrom i fenpikoksamid","Dimetomorf, iprovalikarb i mandipropamid"],"explain":"Ftalimidi u skripti su kaptan, folpet i kaptafol.","level":"prolaz","priority":-25,"topicIndex":3},{"id":41,"topic":"Ftalimidi i ditianon","focus":"Mehanizam","question":"Koji produkt razgradnje se smatra aktivnim delom ftalimida?","correct":"Tiofozgen koji reaguje sa tiolnim i aminokiselinskim delovima enzima","wrong":["Karbendazim koji sprečava deobno vreteno","UK-2A koji inhibira Qi mesto","Fitoaleksin koji nastaje u biljci"],"explain":"Tiofozgen je nestabilan i dovodi do inaktivacije enzima.","level":"prolaz","priority":-20,"topicIndex":3},{"id":42,"topic":"Ftalimidi i ditianon","focus":"Sta suzbija","question":"Koji spektar je naveden za ftalimide?","correct":"Venturia, Blumeriella, Taphrina, Monilinia, Plasmopara, Botrytis, Phytophthora, Alternaria i Rhizoctonia","wrong":["Samo Oomycetes bez pravih gljiva","Samo Botrytis cinerea","Samo bakterijske bolesti"],"explain":"Ftalimidi imaju širok spektar, naročito u voćarstvu i vinogradarstvu.","level":"prolaz","priority":-15,"topicIndex":3},{"id":43,"topic":"Ftalimidi i ditianon","focus":"Fizicke osobine","question":"Kako je opisan kaptan?","correct":"Bezbojna kristalna supstanca, slabo rastvorljiva u vodi, dobro u hloroformu, acetonu i benzolu","wrong":["Žuta viskozna tečnost, dobro rastvorljiva u vodi","Bela praškasta supstanca ekstremno rastvorljiva u vodi","Crveni prah koji deluje samo algicidno"],"explain":"Kaptan je bezbojan kristal i protektivni fungicid sa izvesnim kurativnim delovanjem.","level":"ispit","priority":-10,"topicIndex":3},{"id":44,"topic":"Ftalimidi i ditianon","focus":"Sta suzbija","question":"Za šta se kaptan koristi u tretiranju semena?","correct":"Za Pythium sp., Phoma sp. i Rhizoctonia spp.","wrong":["Za Erysiphe necator i Blumeria graminis","Za Phytophthora fragariae var. rubi","Za Erwinia amylovora"],"explain":"Kaptan se koristi i za seme ratarskih i povrtarskih biljaka.","level":"prolaz","priority":-20,"topicIndex":3},{"id":45,"topic":"Ftalimidi i ditianon","focus":"Fizicke osobine","question":"Koji fitotoksični efekat može dati kaptan na nekim sortama jabuke i kruške?","correct":"Mrežavost plodova","wrong":["Hloroza samo korena","Stvaranje voštanog filma","Sterilnost cveta zbog metionina"],"explain":"Skripta navodi mrežavost kod Zlatnog i Crvenog delišesa i Boskove bočice.","level":"tesko","priority":-5,"topicIndex":3},{"id":46,"topic":"Ftalimidi i ditianon","focus":"Fizicke osobine","question":"Kako je opisan folpet?","correct":"Bezbojna kristalna supstanca, nerastvorljiva u vodi, izrazito preventivno delovanje","wrong":["Viskozna tečnost žućkaste boje sa jakom sistemičnošću","Beli prah ekstremno rastvorljiv u vodi","Crveni prah za prezimljujuće forme"],"explain":"Folpet je preventivni ftalimid i dominantno se koristi za plamenjaču vinove loze.","level":"ispit","priority":-10,"topicIndex":3},{"id":47,"topic":"Ftalimidi i ditianon","focus":"Sta suzbija","question":"Koja praktična primena folpeta je dominantna?","correct":"Suzbijanje Plasmopara viticola na vinovoj lozi","wrong":["Suzbijanje Penicillium digitatum u skladištu","Suzbijanje Tilletia tritici na semenu","Suzbijanje alga u ribnjacima"],"explain":"Folpet se u praksi dominantno koristi protiv plamenjače vinove loze.","level":"prolaz","priority":-15,"topicIndex":3},{"id":48,"topic":"Ftalimidi i ditianon","focus":"Fizicke osobine","question":"Kako je opisan ditianon?","correct":"Tamno smeđa kristalna supstanca, nerastvorljiva u vodi","wrong":["Bela viskozna tečnost ekstremno rastvorljiva u vodi","Žuti prah koji se primenjuje u elementarnom stanju","Bezbojni kristal koji se brzo kreće floemom"],"explain":"Ditianon je kvinon, tamno smeđ kristal i bolje se rastvara u organskim rastvaračima.","level":"ispit","priority":-10,"topicIndex":3},{"id":49,"topic":"Ftalimidi i ditianon","focus":"Fizicke osobine","question":"Šta ditianonu daje dobru postojanost na listu?","correct":"Dobro vezivanje za lisnu površinu i redistribucija posle kiše","wrong":["Pretvaranje u karbendazim","Ekstremna rastvorljivost u vodi","Isključivo gasna faza"],"explain":"Skripta navodi otpornost na spiranje i redistribuciju kišom.","level":"ispit","priority":-10,"topicIndex":3},{"id":50,"topic":"Ftalimidi i ditianon","focus":"Sta suzbija","question":"Koji patogeni su navedeni za ditianon?","correct":"Venturia inaequalis, Blumeriella jaapii, Monilinia spp., Taphrina deformans i Plasmopara viticola","wrong":["Samo Erysiphe necator i Blumeria graminis","Samo Fusarium spp. na semenu","Samo bakterije roda Xanthomonas"],"explain":"Ditianon ima širok spektar uključujući krastavost, monilije, Taphrina i plamenjaču vinove loze.","level":"prolaz","priority":-15,"topicIndex":3},{"id":51,"topic":"Ftalimidi i ditianon","focus":"Mehanizam","question":"Kako ditianon deluje na gljive?","correct":"Nespecifično inhibira, reaguje sa SH grupama, ometa disanje i formiranje proteina","wrong":["Inhibira samo sintezu metionina","Blokira Qi mesto i citohrom c reduktazu","Indukuje samo HR bez direktnog delovanja"],"explain":"Ditianon je multi-site inhibitor sa efektom na SH enzime i ćelijsko disanje.","level":"prolaz","priority":-20,"topicIndex":3},{"id":52,"topic":"Ftalimidi i ditianon","focus":"Fizicke osobine","question":"Kada ditianon može izazvati rđanje plodova Zlatnog delišesa?","correct":"Ako se primeni u fazi cvetanja i ranoj fazi formiranja plodova","wrong":["Samo pri tretiranju semena kukuruza","Samo u skladištu citrusa","Nikada, jer ne daje fitotoksičnost"],"explain":"Skripta navodi slabo rđanje plodova u tim okolnostima.","level":"ispit","priority":-5,"topicIndex":3},{"id":53,"topic":"Acilalanini","focus":"Sta suzbija","question":"Koja četiri acilalanina su navedena?","correct":"Metalaksil, metalaksil-M, benalaksil i benalaksil-M","wrong":["Mankozeb, metiram, ciram i folpet","Boskalid, flutolanil, fluopiram i izofetamid","Pirimetanil, ciprodinil, spiroksamin i fenheksamid"],"explain":"Skripta jasno navodi četiri jedinjenja, uključujući M oblike.","level":"prolaz","priority":-15,"topicIndex":4},{"id":54,"topic":"Acilalanini","focus":"Sta suzbija","question":"Koji je osnovni spektar acilalanina?","correct":"Oomycetes, naročito prouzrokovači plamenjača","wrong":["Samo pepelnice iz Erysiphaceae","Samo bakterije jabučastog voća","Samo skladišni Penicillium"],"explain":"Acilalanini su oomicetni fungicidi, odnosno peronosporicidi.","level":"prolaz","priority":-25,"topicIndex":4},{"id":55,"topic":"Acilalanini","focus":"Mehanizam","question":"Koji je mehanizam delovanja acilalanina?","correct":"Inhibicija sinteze RNA preko ugradnje uridina u UTP","wrong":["Inhibicija sinteze metionina","Blokada histidin kinaze u osmotskom prenosu signala","Inhibicija sukcinat dehidrogenaze na Qp mestu"],"explain":"Acilalanini prekidaju biosintezu RNA i time zaustavljaju rast gljive.","level":"prolaz","priority":-20,"topicIndex":4},{"id":56,"topic":"Acilalanini","focus":"Mehanizam","question":"Zašto acilalanini maksimalno deluju posle penetracije u biljno tkivo?","correct":"Oospore imaju dovoljno ribozoma za klicinu cev, a delovanje se ispoljava preko RNA i rasta","wrong":["Zato što deluju samo parama","Zato što se aktiviraju isključivo na površini semena","Zato što deluju samo na već formirane zoospore"],"explain":"Skripta objašnjava da ne inhibiraju samo klijanje oospora, već rast posle penetracije.","level":"prolaz","priority":-25,"topicIndex":4},{"id":57,"topic":"Acilalanini","focus":"Rezistentnost","question":"Koliki je rizik rezistentnosti kod acilalanina?","correct":"Jako izražen, naročito kod Phytophthora infestans","wrong":["Veoma nizak, rezistentnost se ne javlja","Samo kod bakterija","Samo kod Penicillium expansum"],"explain":"Acilalanini su grupa visokog rizika, sa rezistentnošću kontrolisanom dominantnim genom.","level":"tesko","priority":-5,"topicIndex":4},{"id":58,"topic":"Acilalanini","focus":"Fizicke osobine","question":"Kako je opisan metalaksil?","correct":"Bela čvrsta supstanca u obliku prašiva, umereno rastvorljiva u vodi","wrong":["Viskozna tečnost žućkasto-braon boje","Bezbojni kristal koji je ekstremno rastvorljiv u vodi","Svetlo zeleni prah nesistemik"],"explain":"Metalaksil je beli prah, umereno rastvorljiv u vodi i dobro u acetonu.","level":"prolaz","priority":-10,"topicIndex":4},{"id":59,"topic":"Acilalanini","focus":"Sta suzbija","question":"Koje patogene metalaksil dobro suzbija folijarno?","correct":"Pseudoperonospora humuli, P. cubensis, Phytophthora infestans, Plasmopara viticola i Bremia lactucae","wrong":["Botrytis cinerea, Monilinia laxa i Penicillium expansum","Venturia inaequalis bez plamenjača","Samo Erysiphe necator"],"explain":"Metalaksil je peronosporicid sa spektrom prema Oomycetes.","level":"prolaz","priority":-20,"topicIndex":4},{"id":60,"topic":"Acilalanini","focus":"Sta suzbija","question":"Za koju primenu semena je naveden metalaksil?","correct":"Tretiranje semena suncokreta protiv Plasmopara halstedii","wrong":["Tretiranje semena pšenice protiv Tilletia tritici","Tretiranje semena salate protiv kaptana","Samo tretiranje citrusa u skladištu"],"explain":"Skripta navodi visoku efikasnost u prevenciji plamenjače suncokreta.","level":"prolaz","priority":-15,"topicIndex":4},{"id":61,"topic":"Acilalanini","focus":"Fizicke osobine","question":"Kako je opisan metalaksil-M?","correct":"Viskozna tečnost žućkasto do svetlo braon boje, bolje rastvorljiva u vodi od metalaksila","wrong":["Beli kristalni prah nerastvorljiv u vodi","Crveni prah koji se koristi sa mineralnim uljima","Svetlo zeleni prah nesistemik"],"explain":"Metalaksil-M je mefenoksam i bolje se rastvara u vodi od metalaksila.","level":"prolaz","priority":-5,"topicIndex":4},{"id":62,"topic":"Acilalanini","focus":"Sta suzbija","question":"Koji patogen na malini dobro suzbija metalaksil-M zalivanjem zone korena?","correct":"Phytophthora fragariae var. rubi","wrong":["Venturia inaequalis","Erysiphe necator","Botrytis cinerea"],"explain":"Ovaj detalj je posebno naveden za metalaksil-M.","level":"prolaz","priority":-15,"topicIndex":4},{"id":63,"topic":"Acilalanini","focus":"Fizicke osobine","question":"Kako je opisan benalaksil?","correct":"Čvrsta supstanca u obliku bezbojnih kristala, slabo rastvorljiva u vodi","wrong":["Viskozna žućkasto-braon tečnost","Žuti prah koji ne prodire kroz kutikulu","Bela tečnost ekstremno rastvorljiva u vodi"],"explain":"Benalaksil se dobro rastvara u organskim rastvaračima kao aceton, hloroform i dihlormetan.","level":"prolaz","priority":-10,"topicIndex":4},{"id":64,"topic":"Acilalanini","focus":"Mehanizam","question":"Šta benalaksil radi u razvoju gljive?","correct":"Zaustavlja rast micelije i sprečava formiranje konidiofora i konidija","wrong":["Indukuje samo sintezu lignina u krastavcu","Sprečava samo oslobađanje bakarnih jona","Blokira isključivo sintezu metionina"],"explain":"Skripta ovo navodi za benalaksil i benalaksil-M.","level":"prolaz","priority":-25,"topicIndex":4},{"id":65,"topic":"Acilalanini","focus":"Fizicke osobine","question":"Kako se benalaksil kreće posle usvajanja?","correct":"Akropetalno, dospeva u sve delove biljke","wrong":["Samo gasnom fazom","Samo bazipetalno u koren","Ne kreće se u biljnom tkivu"],"explain":"Benalaksil se usvaja korenom, stablom i listovima i kreće akropetalno.","level":"ispit","priority":-5,"topicIndex":4},{"id":66,"topic":"Acilalanini","focus":"Fizicke osobine","question":"Šta je karakteristično za benalaksil-M?","correct":"Slabo rastvorljiv u vodi, dobro u organskim rastvaračima, često u gotovim smešama sa mankozebom","wrong":["Ekstremno rastvorljiv u vodi i nesistemičan","Nerastvorljiv u organskim rastvaračima i toksičan za pčele","Koristi se samo kao algicid"],"explain":"Benalaksil-M je kiralaksil, sistemik sa protektivnim, kurativnim i eradikativnim delovanjem.","level":"ispit","priority":-10,"topicIndex":4},{"id":67,"topic":"Tiofanati i toluamidi","focus":"Fizicke osobine","question":"Kako je opisan tiofanat-metil?","correct":"Bezbojni kristali, praktično nerastvorljiv u vodi, dobro rastvorljiv u organskim rastvaračima","wrong":["Viskozna tečnost, žućkasto-braon boje","Crveni prah rastvorljiv u amonijaku","Svetlo zeleni prah nerastvorljiv u toluenu"],"explain":"Tiofanat-metil je sistemični fungicid koji se usvaja listom i korenom.","level":"ispit","priority":-10,"topicIndex":5},{"id":68,"topic":"Tiofanati i toluamidi","focus":"Mehanizam","question":"U šta tiofanat-metil prelazi u biljnom tkivu i zemljištu?","correct":"U karbendazim","wrong":["U UK-2A","U Bordovsku čorbu","U sumpor-dioksid"],"explain":"Pod uticajem vlage i UV svetlosti tiofanat-metil ciklizacijom prelazi u karbendazim.","level":"prolaz","priority":-25,"topicIndex":5},{"id":69,"topic":"Tiofanati i toluamidi","focus":"Mehanizam","question":"Koji je mehanizam tiofanat-metila?","correct":"Inhibira sintezu beta-tubulina i obrazovanje deobnog vretena","wrong":["Blokira C14 demetilaciju ergosterola","Inhibira sintezu metionina","Utiče na propustljivost membrana kao propamokarb"],"explain":"Prekid mitoze nastaje zbog sprečavanja deobnog vretena.","level":"prolaz","priority":-20,"topicIndex":5},{"id":70,"topic":"Tiofanati i toluamidi","focus":"Sta suzbija","question":"Zbog rezistentnosti, na čemu se danas uglavnom bazira primena tiofanat-metila?","correct":"Na suzbijanju fuzarioza strnih žita","wrong":["Na suzbijanju isključivo plamenjače vinove loze","Na bakterijskoj plamenjači jabuke","Na algama u vodenim površinama"],"explain":"Skripta navodi da se zbog rezistentnosti primena sužava ka fuzariozama strnih žita.","level":"tesko","priority":-15,"topicIndex":5},{"id":71,"topic":"Tiofanati i toluamidi","focus":"Rezistentnost","question":"Šta važi za populacije patogena rezistentne na benzimidazole?","correct":"Rezistentne su i na tiofanat-metil","wrong":["Postaju osetljivije na tiofanat-metil","Nisu povezane sa tiofanat-metilom","Postaju rezistentne samo na bakar"],"explain":"To je unakrsna rezistentnost.","level":"tesko","priority":-5,"topicIndex":5},{"id":72,"topic":"Tiofanati i toluamidi","focus":"Fizicke osobine","question":"Kako je opisan zoksamid?","correct":"Beli prašiv, slabo rastvorljiv u vodi, bolje u acetonu","wrong":["Bezbojna tečnost ekstremno rastvorljiva u vodi","Žuti prah koji prelazi u karbendazim","Bela supstanca koja se kreće floemom"],"explain":"Zoksamid je toluamid i primarno protektivni fungicid.","level":"ispit","priority":-5,"topicIndex":5},{"id":73,"topic":"Tiofanati i toluamidi","focus":"Mehanizam","question":"Kako zoksamid ometa deobu ćelija?","correct":"Vezuje se za beta-subjedinicu tubulina i mikrotubularni citoskelet","wrong":["Inhibira C14 demetilazu lanosterola","Blokira sintezu metionina","Oslobađa Cu jone iz eksudata spora"],"explain":"Zoksamid reaguje sa tubulinskim receptorima i razara strukturu jedra.","level":"prolaz","priority":-20,"topicIndex":5},{"id":74,"topic":"Tiofanati i toluamidi","focus":"Fizicke osobine","question":"Zašto je zoksamid otporan na spiranje kišom?","correct":"Čvrsto se vezuje za kutikulu","wrong":["Ekstremno je rastvorljiv u vodi","Kreće se isključivo floemom","Pretvara se u kalcijum-hidroksid"],"explain":"Visok afinitet prema kutikuli daje dobru rezidualnost.","level":"ispit","priority":-5,"topicIndex":5},{"id":75,"topic":"Tiofanati i toluamidi","focus":"Sta suzbija","question":"Koji je praktično najvažniji spektar zoksamida?","correct":"Oomycetes, naročito Phytophthora infestans, Plasmopara viticola i Pseudoperonospora cubensis","wrong":["Samo skladišni Penicillium","Samo pepelnice strnih žita","Samo bakterije paprike"],"explain":"Iako deluje na neke prave gljive, praktično je vezan za plamenjače.","level":"prolaz","priority":-20,"topicIndex":5},{"id":76,"topic":"Fluopikolid i aril-fenilketoni","focus":"Fizicke osobine","question":"Kako je opisan fluopikolid?","correct":"Bež čvrsta supstanca, veoma slabo rastvorljiva u vodi, nizak napon pare","wrong":["Žuta viskozna tečnost ekstremno rastvorljiva u vodi","Crveni prah foto i termolabilan","Bezbojni kristal koji deluje samo na skladišne plesni"],"explain":"Fluopikolid ima srednji podeoni koeficijent i vrlo je perzistentan u zemljištu.","level":"tesko","priority":-10,"topicIndex":6},{"id":77,"topic":"Fluopikolid i aril-fenilketoni","focus":"Sta suzbija","question":"Šta je fluopikolid po spektru?","correct":"Specifičan peronosporicid za bolesti tipa plamenjača","wrong":["Specifičan botriticid bez delovanja na plamenjače","Algicid za ribnjake","Fungicid samo za rđe"],"explain":"Deluje na pseudogljive iz klase Oomycetes.","level":"prolaz","priority":-20,"topicIndex":6},{"id":78,"topic":"Fluopikolid i aril-fenilketoni","focus":"Mehanizam","question":"Koji mehanizam je naveden za fluopikolid?","correct":"Inhibira pomeranje vlakana deobnog vretena i razvoj micelije","wrong":["Blokira sintezu metionina","Inhibira 3-keto-reduktazu","Denaturiše enzime oslobađanjem Cu jona"],"explain":"Fluopikolid utiče na deobu ćelija i stadijume razvoja pseudogljiva.","level":"prolaz","priority":-20,"topicIndex":6},{"id":79,"topic":"Fluopikolid i aril-fenilketoni","focus":"Sta suzbija","question":"Koji patogeni su u spektru fluopikolida?","correct":"Plasmopara viticola, Phytophthora infestans, P. capsici, Peronospora tabacina i Bremia lactucae","wrong":["Erysiphe necator, Blumeria graminis i Podosphaera leucotricha isključivo","Penicillium expansum i Aspergillus spp. isključivo","Tilletia tritici i Ustilago nuda isključivo"],"explain":"Spektar fluopikolida je dominantno Oomycetes.","level":"prolaz","priority":-20,"topicIndex":6},{"id":80,"topic":"Fluopikolid i aril-fenilketoni","focus":"Rezistentnost","question":"Zašto fluopikolid nema ukrštenu rezistentnost sa acilalaninima i CAA fungicidima?","correct":"Ima unikatan/specifičan mehanizam delovanja","wrong":["Zato što je multi-site bakarni fungicid","Zato što se uvek primenjuje samo sa sumporom","Zato što deluje samo na bakterije"],"explain":"FRAC ga vezuje za srednji rizik i unikatan mehanizam.","level":"tesko","priority":0,"topicIndex":6},{"id":81,"topic":"Fluopikolid i aril-fenilketoni","focus":"Mehanizam","question":"Kako aril-fenilketoni deluju na pepelnice?","correct":"Ometaju funkciju motornih i strukturnih proteina i hifalnu morfogenezu","wrong":["Inhibiraju sintezu RNA preko UTP","Oslobađaju bakarne jone","Direktno blokiraju Qi mesto"],"explain":"Dovode do malformacija infekcionih struktura, apresorija i hifa.","level":"prolaz","priority":-20,"topicIndex":6},{"id":82,"topic":"Fluopikolid i aril-fenilketoni","focus":"Fizicke osobine","question":"Koje osobine odgovaraju metrafenonu?","correct":"Žućkasto-beli kristali, slabo rastvorljiv u vodi, umereno visok Ko/w","wrong":["Viskozna braon tečnost, veoma rastvorljiva u vodi","Svetlo zeleni prah za tretiranje semena","Beli prah ekstremno rastvorljiv u vodi"],"explain":"Metrafenon je benzafenon sa preventivnim, kurativnim i delimično eradikativnim delovanjem.","level":"tesko","priority":-10,"topicIndex":6},{"id":83,"topic":"Fluopikolid i aril-fenilketoni","focus":"Mehanizam","question":"Šta metrafenon radi infekcionim strukturama?","correct":"Inhibira klijanje spora, blokira apresorije i dovodi do pucanja vrhova hifa","wrong":["Formira bakarne soli na površini lista","Indukuje samo lignifikaciju korena","Blokira sintezu metionina"],"explain":"Metrafenon ima jako antisporulativno delovanje.","level":"prolaz","priority":-25,"topicIndex":6},{"id":84,"topic":"Fluopikolid i aril-fenilketoni","focus":"Fizicke osobine","question":"Kako je opisan pirifenon?","correct":"Beličasti kristalni prah, slabo rastvorljiv u vodi, dobro u većini organskih rastvarača","wrong":["Crveni prah za prezimljujuće forme","Bezbojna tečnost ekstremno rastvorljiva u vodi","Žuti prah nerastvorljiv u organskim rastvaračima"],"explain":"Pirifenon je benzoilpiridin sa lokal-sistemičnim i translaminarnim delovanjem.","level":"ispit","priority":-10,"topicIndex":6},{"id":85,"topic":"Fluopikolid i aril-fenilketoni","focus":"Sta suzbija","question":"Koja je glavna primena pirifenona?","correct":"Suzbijanje Erysiphe necator na vinovoj lozi i pepelnica strnih žita i tikvenjača","wrong":["Suzbijanje Pythium u zemljištu","Suzbijanje bakterijske plamenjače jabuke","Suzbijanje algi u bazenima"],"explain":"Pirifenon se vezuje pre svega za pepelnice.","level":"prolaz","priority":-15,"topicIndex":6},{"id":86,"topic":"SDHI","focus":"Mehanizam","question":"Koje mesto ciljaju SDHI fungicidi?","correct":"Sukcinat-dehidrogenazu u mitohondrijalnom kompleksu II","wrong":["C14 demetilazu lanosterola","Histidin kinazu osmotskog puta","Sintezu metionina"],"explain":"SDHI inhibiraju respiraciju vezivanjem za SDH enzim.","level":"prolaz","priority":-20,"topicIndex":7},{"id":87,"topic":"SDHI","focus":"Mehanizam","question":"Šta SDHI blokiraju na molekularnom nivou?","correct":"Redukciju ubikvinona na Qp mestu","wrong":["Ugradnju uridina u UTP","Sekreciju hidrolitičkih enzima","Oslobađanje Cu jona"],"explain":"Vezivanjem za Qp mesto prekida se transport elektrona.","level":"prolaz","priority":-25,"topicIndex":7},{"id":88,"topic":"SDHI","focus":"Sta suzbija","question":"Na šta SDHI fungicidi ne deluju prema skripti?","correct":"Na plamenjače, odnosno Oomycetes","wrong":["Na Venturia spp.","Na Botrytis cinerea","Na Sclerotinia sclerotiorum"],"explain":"Skripta naglašava: ne deluju na plamenjače, pseudogljive.","level":"prolaz","priority":-20,"topicIndex":7},{"id":89,"topic":"SDHI","focus":"Rezistentnost","question":"Koje mutacije su važne za rezistentnost na SDHI?","correct":"Tačkaste mutacije na SDHB, SDHC i SDHD podjedinicama","wrong":["Samo mutacije u CYP51A1","Samo G143A na citohrom b genu","Samo mutacije histidin kinaze"],"explain":"Najčešće se pominje zamena histidina tirozinom ili argininom na SDHB 272.","level":"tesko","priority":0,"topicIndex":7},{"id":90,"topic":"SDHI","focus":"Fizicke osobine","question":"Kako je opisan boskalid?","correct":"Bela čvrsta supstanca u kristalima, slabo rastvorljiva u vodi, vrlo niska isparljivost","wrong":["Žuta tečnost ekstremno rastvorljiva u vodi","Svetlo zeleni prah za skladišne bolesti","Crveni prah za prezimljujuće forme"],"explain":"Boskalid je translaminaran i kreće se akropetalno.","level":"ispit","priority":-10,"topicIndex":7},{"id":91,"topic":"SDHI","focus":"Sta suzbija","question":"Koji spektar odgovara boskalidu?","correct":"Alternaria solani, Botrytis cinerea, Monilinia spp., Erysiphe necator i Sclerotinia sclerotiorum","wrong":["Samo Pythium spp. i Plasmodiophora brassicae","Samo Erwinia amylovora","Samo Penicillium digitatum"],"explain":"Boskalid je široko efikasan u zaštiti brojnih gajenih biljaka.","level":"prolaz","priority":-15,"topicIndex":7},{"id":92,"topic":"SDHI","focus":"Fizicke osobine","question":"Šta je karakteristično za flutolanil?","correct":"Beli prah, slabo rastvorljiv u vodi, vrlo postojan u zemljištu, deluje na Basidiomycetes","wrong":["Viskozna tečnost koja se kreće floemom","Crveni prah koji deluje algicidno","Bezbojni kristal za DMI spektar"],"explain":"Flutolanil pripada fenil-benzamidima.","level":"ispit","priority":-10,"topicIndex":7},{"id":93,"topic":"SDHI","focus":"Fizicke osobine","question":"Kako je opisan fluksapiroksad?","correct":"Fini kristalni prah, slabo rastvorljiv u vodi, dobro u većini organskih rastvarača","wrong":["Ekstremno rastvorljiv beli prah","Žuta tečnost koja deluje samo parama","Svetlo zeleni nesistemik"],"explain":"Fluksapiroksad deluje protektivno, kurativno i eradikativno.","level":"ispit","priority":-10,"topicIndex":7},{"id":94,"topic":"SDHI","focus":"Sta suzbija","question":"Koji spektar je naglašen za fluksapiroksad?","correct":"Pepelnice, Septoria, Puccinia, Fusarium na semenu, Sclerotinia, Rhizoctonia, Alternaria i Cercospora","wrong":["Samo plamenjače vinove loze","Samo alge u vodenim površinama","Samo bakterije koštičavog voća"],"explain":"Skripta ga opisuje kao SDHI širokog spektra.","level":"prolaz","priority":-15,"topicIndex":7},{"id":95,"topic":"SDHI","focus":"Fizicke osobine","question":"Koja osobina izopirazama omogućava duže zadržavanje u kutikularnom voštanom sloju?","correct":"Visoka lipofilnost","wrong":["Ekstremna rastvorljivost u vodi","Razgradnja u karbendazim","Samo bazipetalno kretanje"],"explain":"Visoka lipofilnost daje otpornost na spiranje.","level":"ispit","priority":-10,"topicIndex":7},{"id":96,"topic":"SDHI","focus":"Sta suzbija","question":"Koji patogeni su navedeni za izopirazam?","correct":"Septoria tritici, Puccinia recondita, P. striiformis, Erysiphe graminis i Podosphaera xanthii","wrong":["Pythium spp. i Plasmodiophora brassicae isključivo","Erwinia amylovora isključivo","Samo Penicillium spp."],"explain":"Navodi se i efikasnost protiv Botrytis cinerea, Podosphaera leucotricha i Venturia inaequalis.","level":"prolaz","priority":-15,"topicIndex":7},{"id":97,"topic":"SDHI","focus":"Fizicke osobine","question":"Kako je opisan fluopiram?","correct":"Bela praškasta supstanca, niska rastvorljivost u vodi, nizak napon pare","wrong":["Viskozna žućkasto-braon tečnost","Bezbojni kristal ekstremno rastvorljiv u vodi","Crveni prah za prezimljujuće forme"],"explain":"Fluopiram ima translaminarnu aktivnost i ograničeno kretanje ksilemom.","level":"ispit","priority":-10,"topicIndex":7},{"id":98,"topic":"SDHI","focus":"Sta suzbija","question":"Koji spektar odgovara fluopiramu?","correct":"Venturia, Podosphaera, Monilinia, Alternaria, Blumeriella, Botrytis i Didymella","wrong":["Samo Pseudoperonospora cubensis","Samo Erwinia amylovora","Samo alge i bakterije"],"explain":"Fluopiram se koristi u jabučastom, koštičavom i jagodastom voću protiv truleži, pegavosti i pepelnica.","level":"prolaz","priority":-15,"topicIndex":7},{"id":99,"topic":"SDHI","focus":"Sta suzbija","question":"Koja SDHI supstanca iz skripte, iz grupe fenil-okso-etiltiofen amida, cilja Monilinia, Botrytis i Sclerotinia?","correct":"Izofetamid","wrong":["Metalaksil-M","Kaptan","Propamokarb"],"explain":"U skripti je naslov loše izdvojen, ali opis odgovara izofetamidu: braonkast prah, fenil-okso-etiltiofen amid.","level":"prolaz","priority":-20,"topicIndex":7},{"id":100,"topic":"QoI","focus":"Mehanizam","question":"Koji je osnovni mehanizam QoI fungicida?","correct":"Inhibicija mitohondrijalne respiracije vezivanjem za Qo mesto kompleksa III","wrong":["Inhibicija RNA sinteze preko uridina","Inhibicija 3-keto-reduktaze","Oslobađanje Cu jona iz spora"],"explain":"QoI blokiraju transport elektrona između citohroma b i c1.","level":"prolaz","priority":-30,"topicIndex":8},{"id":101,"topic":"QoI","focus":"Mehanizam","question":"Šta je direktna posledica blokade transporta elektrona kod QoI?","correct":"Zaustavljanje sinteze ATP-a i deficit energije u ćeliji gljive","wrong":["Povećanje sinteze ergosterola","Aktivacija metionina","Formiranje Bordovske čorbe"],"explain":"Nedostatak energije najviše pogađa energetski zahtevne faze razvoja.","level":"prolaz","priority":-25,"topicIndex":8},{"id":102,"topic":"QoI","focus":"Mehanizam","question":"Na koje faze razvoja QoI posebno dobro deluju?","correct":"Klijanje spora i pokretljivost oospora kod Oomycetes","wrong":["Samo formirane simptome posle duge infekcije","Samo mirovanje semena","Samo bakterijsku deobu"],"explain":"Najbolji efekat je preventivno ili u ranoj fazi patogeneze.","level":"prolaz","priority":-20,"topicIndex":8},{"id":103,"topic":"QoI","focus":"Sta suzbija","question":"Koji je opšti spektar QoI fungicida?","correct":"Ascomycetes, Basidiomycetes, Deuteromycetes i Oomycetes","wrong":["Samo Oomycetes","Samo bakterije","Samo Erysiphaceae"],"explain":"QoI imaju veoma širok spektar.","level":"prolaz","priority":-15,"topicIndex":8},{"id":104,"topic":"QoI","focus":"Rezistentnost","question":"Koje mutacije su klasične za rezistentnost na QoI?","correct":"G143A i F129L u citohrom b genu","wrong":["H272Y na SDHB i P225F","CYP51A1 ekspresija","S34L kod ametoktradina isključivo"],"explain":"Skripta navodi G143A i F129L kao važne mutacije.","level":"tesko","priority":0,"topicIndex":8},{"id":105,"topic":"QoI","focus":"Rezistentnost","question":"Koji drugi mehanizam rezistentnosti na QoI je naveden?","correct":"Stvaranje alternativne oksidaze","wrong":["Hipersekrecija kreča","Povećana rastvorljivost u vodi","Sinteza bakarnih helata"],"explain":"Alternativna oksidaza preusmerava transport elektrona i izbegava mesto delovanja.","level":"tesko","priority":0,"topicIndex":8},{"id":106,"topic":"QoI","focus":"Rezistentnost","question":"Kod kojih patogena je u Srbiji detektovana rezistentnost na QoI?","correct":"Venturia inaequalis, Cercospora beticola, Botrytis cinerea i Didymella applanata","wrong":["Samo Erwinia amylovora","Samo Pythium spp.","Samo Tilletia tritici"],"explain":"Ove vrste su navedene u skripti.","level":"tesko","priority":0,"topicIndex":8},{"id":107,"topic":"QoI","focus":"Fizicke osobine","question":"Kako je opisan azoksistrobin?","correct":"Bela čvrsta supstanca, vrlo slabo rastvorljiva u vodi, sistemik koji se kreće ksilemom","wrong":["Žuta tečnost koja deluje samo kontaktno","Crveni prah za prezimljujuće forme","Bezbojni kristal ekstremno rastvorljiv u vodi"],"explain":"Azoksistrobin deluje preventivno, kurativno i delimično eradikativno.","level":"ispit","priority":-10,"topicIndex":8},{"id":108,"topic":"QoI","focus":"Sta suzbija","question":"Koji patogeni su navedeni za azoksistrobin?","correct":"Alternaria solani, Monilinia spp., Plasmopara viticola, Erysiphe graminis, Phytophthora infestans i Puccinia spp.","wrong":["Samo Penicillium spp. u skladištu","Samo Erwinia amylovora","Samo Taphrina deformans"],"explain":"Azoksistrobin ima širok QoI spektar.","level":"prolaz","priority":-20,"topicIndex":8},{"id":109,"topic":"QoI","focus":"Fizicke osobine","question":"Kako je opisan piraklostrobin?","correct":"Bezbojni prah, veoma slabo rastvorljiv u vodi, lokal-sistemičan i translaminaran","wrong":["Ekstremno rastvorljiv beli prah","Viskozna tečnost sa jakim bazipetalnim kretanjem","Svetlo zeleni nesistemik za seme"],"explain":"Piraklostrobin ne deluje parama ni u povoljnim uslovima.","level":"ispit","priority":-5,"topicIndex":8},{"id":110,"topic":"QoI","focus":"Fizicke osobine","question":"Zašto je krezoksim-metil prijemčiv za lisnu površinu?","correct":"Zbog izražene lipofilnosti i afiniteta za kutikularne voskove","wrong":["Zbog ekstremne rastvorljivosti u vodi","Zato što prelazi u karbendazim","Zato što oslobađa Cu jone"],"explain":"Ko/w logP oko 3,5 daje visok afinitet za kutikularne voskove.","level":"tesko","priority":-5,"topicIndex":8},{"id":111,"topic":"QoI","focus":"Sta suzbija","question":"Na šta krezoksim-metil naročito dobro deluje?","correct":"Prouzrokovače pepelnica kao Podosphaera leucotricha i Uncinula necator","wrong":["Samo Phytophthora fragariae na malini","Samo Erwinia amylovora","Samo Pythium spp. u rasadu"],"explain":"Skripta navodi odlične efekte na pepelnice, uz smanjenje primene za Venturia zbog rezistentnosti.","level":"tesko","priority":-20,"topicIndex":8},{"id":112,"topic":"QoI","focus":"Fizicke osobine","question":"Koja osobina je karakteristična za trifloksistrobin?","correct":"Redistribuira se po površini biljnih organa u gasnoj fazi i translaminarni je sistemik","wrong":["Ekstremno se rastvara u vodi i ispira kišom","Nema delovanje na klijanje spora","Koristi se isključivo kao baktericid"],"explain":"Trifloksistrobin je otporan na spiranje kišom i ima antisporulativno delovanje.","level":"ispit","priority":-5,"topicIndex":8},{"id":113,"topic":"QoI","focus":"Sta suzbija","question":"Koji spektar je naveden za famoksadon i fenamidon?","correct":"Naročito prouzrokovači plamenjača kao Bremia, Peronospora, Pseudoperonospora, Plasmopara i Phytophthora","wrong":["Samo skladišni Penicillium","Samo pepelnica jabuke","Samo bakterije"],"explain":"Oba imaju spektar koji naročito obuhvata plamenjače, uz Alternaria i Septoria.","level":"prolaz","priority":-15,"topicIndex":8},{"id":114,"topic":"QiI i QoSI","focus":"Mehanizam","question":"Gde deluju QiI fungicidi kao cijazofamid i amisulbrom?","correct":"Na Qi mesto ubikvinon-reduktaze u mitohondrijalnom bc1 kompleksu","wrong":["Na C14 demetilazu","Na histidin kinazu osmotskog puta","Na beta-tubulin deobnog vretena"],"explain":"QiI prekidaju respiracioni ciklus vezivanjem za ubikvinon-reduktazu.","level":"prolaz","priority":-20,"topicIndex":9},{"id":115,"topic":"QiI i QoSI","focus":"Sta suzbija","question":"Koji je osnovni spektar cijazofamida i amisulbroma?","correct":"Oomycetes i Plasmodiophoromycetes","wrong":["Samo skladišne plesni","Samo rđe strnih žita","Samo bakterije"],"explain":"QiI su izrazito efikasni protiv pseudogljiva i plamenjača.","level":"prolaz","priority":-25,"topicIndex":9},{"id":116,"topic":"QiI i QoSI","focus":"Fizicke osobine","question":"Kako je opisan cijazofamid?","correct":"Bela praškasta supstanca, slabo rastvorljiva u vodi, dobro u dihlormetanu i acetonu","wrong":["Crveni prah rastvorljiv u amonijaku","Viskozna žućkasto-braon tečnost","Bezbojni kristal ekstremno rastvorljiv u vodi"],"explain":"Cijazofamid ima izražena preventivna svojstva, rezidualnost i otpornost na kišu.","level":"ispit","priority":-10,"topicIndex":9},{"id":117,"topic":"QiI i QoSI","focus":"Mehanizam","question":"Na koje faze razvoja Oomycetes deluje cijazofamid?","correct":"Sprečava klijanje i oslobađanje zoospora, formiranje zoosporangija, rast micelije i obrazovanje oospora","wrong":["Deluje samo na zrelu miceliju bez efekta na spore","Deluje samo na bakterijske ćelije","Deluje samo na deobno vreteno pravih gljiva"],"explain":"Skripta kaže da deluje inhibitorno u svim fazama razvoja Oomycetes.","level":"prolaz","priority":-20,"topicIndex":9},{"id":118,"topic":"QiI i QoSI","focus":"Sta suzbija","question":"Koji patogeni su u spektru cijazofamida?","correct":"Phytophthora infestans, Plasmopara viticola, Pseudoperonospora cubensis, Plasmodiophora sp. i Pythium sp.","wrong":["Erysiphe necator i Blumeria graminis isključivo","Venturia inaequalis bez plamenjača","Penicillium i Aspergillus isključivo"],"explain":"Cijazofamid je specifičan peronosporicid.","level":"prolaz","priority":-20,"topicIndex":9},{"id":119,"topic":"QiI i QoSI","focus":"Fizicke osobine","question":"Kako je opisan amisulbrom?","correct":"Čvrsta braon supstanca, slabo rastvorljiva u vodi, visok Ko/w i veoma nizak napon pare","wrong":["Bela tečnost ekstremno rastvorljiva u vodi","Žuti elementarni prah","Svetlo zeleni nesistemik za skladište"],"explain":"Amisulbrom ima preventivno i lokal-sistemično delovanje i kreće se translaminarno.","level":"tesko","priority":-10,"topicIndex":9},{"id":120,"topic":"QiI i QoSI","focus":"Sta suzbija","question":"Za koje patogene je amisulbrom naročito efikasan?","correct":"Phytophthora infestans i Plasmopara viticola","wrong":["Tilletia tritici i Ustilago nuda","Erwinia amylovora","Penicillium digitatum"],"explain":"Najčešće se koristi u krompiru i vinovoj lozi.","level":"prolaz","priority":-20,"topicIndex":9},{"id":121,"topic":"QiI i QoSI","focus":"Mehanizam","question":"Šta je fenpikoksamid po poreklu?","correct":"Derivat prirodnog produkta fermentacije Streptomyces sp. koji se vraća u UK-2A","wrong":["Derivat bakar-sulfata iz Bordoa","Produkt razgradnje tiofanat-metila","Alotropska modifikacija sumpora"],"explain":"Skripta navodi UK-2A i stabilizaciju sintetičkom modifikacijom.","level":"tesko","priority":-25,"topicIndex":9},{"id":122,"topic":"QiI i QoSI","focus":"Mehanizam","question":"Gde deluje ametoktradin kao QoSI fungicid?","correct":"Na Qo mesto, mesto vezivanja stigmatelina u citohrom bc1 kompleksu","wrong":["Na Qp mesto kompleksa II","Na C14 demetilazu","Na sintezu metionina"],"explain":"Zbog specifičnog mesta nema ukrštene rezistentnosti sa QoI fungicidima.","level":"tesko","priority":-20,"topicIndex":9},{"id":123,"topic":"QiI i QoSI","focus":"Fizicke osobine","question":"Kako se ametoktradin ponaša na lisnoj površini?","correct":"Lipofilno se zadržava u epikutikularnom voštanom sloju i formira stabilan protektivni film","wrong":["Ekstremno se rastvara u vodi i brzo ispira","Odmah prelazi u karbendazim","Kreće se isključivo floemom"],"explain":"Ametoktradin je tipičan nesistemik i otporan je na spiranje kišom.","level":"ispit","priority":-10,"topicIndex":9},{"id":124,"topic":"QiI i QoSI","focus":"Sta suzbija","question":"Koje plamenjače su navedene za ametoktradin?","correct":"Plasmopara viticola, Pseudoperonospora cubensis, Phytophthora infestans i Bremia lactucae","wrong":["Samo Venturia inaequalis","Samo Botrytis cinerea","Samo Fusarium spp."],"explain":"Ametoktradin suzbija prouzrokovače plamenjača.","level":"prolaz","priority":-20,"topicIndex":9},{"id":125,"topic":"CAA","focus":"Mehanizam","question":"Šta CAA fungicidi inhibiraju kod pseudogljiva?","correct":"Procese uključene u biosintezu ćelijskog zida","wrong":["C14 demetilaciju lanosterola","Sintezu metionina","Histidin kinazu osmotskog puta"],"explain":"Biohemijski mehanizam nije potpuno razjašnjen, ali je vezan za ćelijski zid pseudogljiva.","level":"prolaz","priority":-25,"topicIndex":10},{"id":126,"topic":"CAA","focus":"Mehanizam","question":"Na šta CAA fungicidi ne utiču prema skripti?","correct":"Na pražnjenje zoospora iz sporangija niti na njihovu pokretljivost","wrong":["Na klijanje citospora i sporangija","Na rast kličine cevi","Na rast micelije"],"explain":"Skripta posebno navodi da ne utiču na pražnjenje i pokretljivost zoospora.","level":"prolaz","priority":-25,"topicIndex":10},{"id":127,"topic":"CAA","focus":"Mehanizam","question":"Koje faze CAA inhibiraju?","correct":"Klijanje citospora i sporangija, rast kličine cevi i rast micelije","wrong":["Samo formiranje bakterijskih spora","Samo skladišnu sporulaciju Penicillium","Samo sintezu metionina"],"explain":"Tako sprečavaju infekciju u biljnom tkivu.","level":"prolaz","priority":-20,"topicIndex":10},{"id":128,"topic":"CAA","focus":"Sta suzbija","question":"Koji je spektar CAA fungicida?","correct":"Plamenjače iz Oomycetes kao Plasmopara viticola, Phytophthora infestans i Pseudoperonospora cubensis","wrong":["Samo pepelnice","Samo skladišne plesni","Samo bakterije"],"explain":"CAA su peronosporicidi.","level":"prolaz","priority":-20,"topicIndex":10},{"id":129,"topic":"CAA","focus":"Rezistentnost","question":"Kako je opisan rizik rezistentnosti kod CAA?","correct":"Srednji za P. infestans, visok za P. viticola","wrong":["Nizak za sve patogene","Postoji samo kod bakterija","Ne postoji zbog multi-site mehanizma"],"explain":"Skripta navodi potrebu za antirezistentnom strategijom i kombinovanjem sa multi-site fungicidima.","level":"tesko","priority":-5,"topicIndex":10},{"id":130,"topic":"CAA","focus":"Fizicke osobine","question":"Kako je opisan dimetomorf?","correct":"Bezbojan kristal, slabo rastvorljiv u vodi, najbolje rastvorljiv u dihloretanu","wrong":["Viskozna tečnost žućkasto-braon boje","Svetlo zeleni prah za skladište","Beli prah ekstremno rastvorljiv u vodi"],"explain":"Dimetomorf je hidrološki i termostabilan i slabo isparljiv.","level":"ispit","priority":-10,"topicIndex":10},{"id":131,"topic":"CAA","focus":"Fizicke osobine","question":"Kako se dimetomorf kreće u biljci?","correct":"Lokal-sistemično, translaminarno","wrong":["Isključivo gasnom fazom","Ne ulazi u tkivo ni delimično","Samo floemom bazipetalno"],"explain":"Ima preventivno, kurativno i u meri eradikativno delovanje.","level":"ispit","priority":-5,"topicIndex":10},{"id":132,"topic":"CAA","focus":"Sta suzbija","question":"Koje patogene suzbija dimetomorf?","correct":"Plasmopara viticola, Bremia lactucae, Pseudoperonospora cubensis, Phytophthora infestans i P. parasitica","wrong":["Botrytis cinerea i Penicillium expansum isključivo","Erysiphe necator isključivo","Erwinia amylovora isključivo"],"explain":"Dimetomorf se uglavnom primenjuje u smešama sa mankozebom.","level":"prolaz","priority":-20,"topicIndex":10},{"id":133,"topic":"CAA","focus":"Fizicke osobine","question":"Šta karakteriše iprovalikarb?","correct":"Dobra sistemičnost, akropetalno kretanje apoplastom i dobra pokretljivost u vinovoj lozi","wrong":["Isključivo kontaktno delovanje bez kretanja","Ekstremna isparljivost","Aktivacija u UK-2A"],"explain":"Iprovalikarb je valinamid karbamat sa preventivnim, kurativnim i delimično eradikativnim delovanjem.","level":"ispit","priority":-10,"topicIndex":10},{"id":134,"topic":"CAA","focus":"Fizicke osobine","question":"Šta karakteriše bentiavalikarb?","correct":"Visok Ko/w, dugotrajno preventivno i delimično kurativno delovanje, bez izraženog translaminarnog kretanja","wrong":["Ekstremna rastvorljivost u vodi i jako sistemično kretanje","Samo gasna faza","Samo tretiranje semena protiv Tilletia"],"explain":"Bentiavalikarb se često primenjuje u smešama sa mankozebom i folpetom.","level":"tesko","priority":-10,"topicIndex":10},{"id":135,"topic":"CAA","focus":"Fizicke osobine","question":"Zašto mandipropamid daje dugotrajnu zaštitu posle folijarne primene?","correct":"Snažno se vezuje za kutikularne voskove i stvara barijeru na površini lista","wrong":["Ekstremno se rastvara u vodi","Pretvara se u karbendazim","Deluje samo preko korena"],"explain":"Ova barijera obezbeđuje zaštitu i u uslovima čestih padavina.","level":"ispit","priority":-10,"topicIndex":10},{"id":136,"topic":"CAA","focus":"Mehanizam","question":"Koje razvojne procese mandipropamid inhibira?","correct":"Klijanje spora, rast micelije i sporulaciju","wrong":["Samo sintezu metionina","Samo C14 demetilaciju","Samo oslobađanje Cu jona"],"explain":"Mandipropamid je CAA sa snažnim preventivnim i zadovoljavajućim kurativnim delovanjem.","level":"prolaz","priority":-20,"topicIndex":10},{"id":137,"topic":"DMI triazoli i imidazoli","focus":"Mehanizam","question":"Koji proces inhibiraju DMI fungicidi?","correct":"14 alfa demetilaciju u biosintezi sterola","wrong":["Sintezu metionina","Sintezu RNA preko UTP","Osmotski HOG put"],"explain":"DMI sprečavaju odvajanje metil grupe sa C14 lanosterola ili 24-metilendihidrolanosterola.","level":"prolaz","priority":-20,"topicIndex":11},{"id":138,"topic":"DMI triazoli i imidazoli","focus":"Mehanizam","question":"Šta je posledica delovanja DMI fungicida?","correct":"Akumulacija metilovanih sterola i prestanak rasta hifa i micelije","wrong":["Stvaranje bakarnih jona na površini lista","Povećano oslobađanje zoospora","Povećanje pokretljivosti oospora"],"explain":"Gljive ne mogu iskoristiti nastale sterole za građu ćelijskog zida.","level":"prolaz","priority":-25,"topicIndex":11},{"id":139,"topic":"DMI triazoli i imidazoli","focus":"Sta suzbija","question":"Na koje klase patogena deluju DMI fungicidi?","correct":"Ascomycetes, Basidiomycetes i Deuteromycetes","wrong":["Samo Oomycetes","Samo bakterije","Samo alge"],"explain":"Spektar obuhvata pepelnice, pegavosti, rđe, truleži i Fusarium.","level":"prolaz","priority":-15,"topicIndex":11},{"id":140,"topic":"DMI triazoli i imidazoli","focus":"Sta suzbija","question":"Zašto Oomycetes imaju prirodnu otpornost na DMI fungicide?","correct":"Zbog drugačije građe ćelijskog zida, dominantno beta glukani i celuloza","wrong":["Zbog prisustva bakra u ćelijskom zidu","Zbog nedostatka vode u sporama","Zbog visokog Ko/w fungicida"],"explain":"Skripta posebno naglašava prirodnu otpornost pseudogljiva.","level":"prolaz","priority":-15,"topicIndex":11},{"id":141,"topic":"DMI triazoli i imidazoli","focus":"Rezistentnost","question":"Koji gen/ciljni enzim je važan za rezistentnost na DMI?","correct":"CYP51 odnosno ERG11, citohrom P-450 za 14 alfa demetilaciju","wrong":["Citohrom b G143A isključivo","Histidin kinaza HOG puta","Beta-tubulin isključivo"],"explain":"Mutacije i pojačana ekspresija CYP51A1 navedene su kod V. inaequalis.","level":"tesko","priority":0,"topicIndex":11},{"id":142,"topic":"DMI triazoli i imidazoli","focus":"Fizicke osobine","question":"Kako je opisan tebukonazol?","correct":"Bezbojni kristali, slabo rastvorljiv u vodi, dobro u organskim rastvaračima, visok Ko/w","wrong":["Svetlo zeleni prah za skladište","Viskozna tečnost ekstremno rastvorljiva u vodi","Žuti elementarni prah"],"explain":"Tebukonazol je sistemik sa preventivnim, kurativnim i delimično eradikativnim delovanjem.","level":"tesko","priority":-10,"topicIndex":11},{"id":143,"topic":"DMI triazoli i imidazoli","focus":"Sta suzbija","question":"Koji spektar je naveden za tebukonazol?","correct":"Tilletia, Ustilago, Blumeria, Septoria, Puccinia, Venturia, Podosphaera, Erysiphe, Monilinia i Cercospora","wrong":["Samo Phytophthora infestans","Samo Pythium spp.","Samo Penicillium u skladištu"],"explain":"Tebukonazol se koristi folijarno i u zaštiti semena.","level":"prolaz","priority":-15,"topicIndex":11},{"id":144,"topic":"DMI triazoli i imidazoli","focus":"Fizicke osobine","question":"Kako je opisan difenokonazol?","correct":"Beličasti kristali, slaba rastvorljivost u vodi, visok Ko/w, dobro u acetonu","wrong":["Crveni prah za prezimljujuće forme","Bela tečnost ekstremno rastvorljiva u vodi","Žuti prah koji deluje samo kontaktno"],"explain":"Difenokonazol je sistemik sa preventivnim i kurativnim delovanjem.","level":"tesko","priority":-10,"topicIndex":11},{"id":145,"topic":"DMI triazoli i imidazoli","focus":"Sta suzbija","question":"Koje patogene suzbija difenokonazol?","correct":"Venturia inaequalis, Podosphaera leucotricha, Monilinia sp., Erysiphe necator, Septoria, Mycosphaerella i Alternaria","wrong":["Samo Pseudoperonospora cubensis","Samo alge","Samo Erwinia amylovora"],"explain":"Naveden je i za neke patogene koji se prenose semenom.","level":"prolaz","priority":-15,"topicIndex":11},{"id":146,"topic":"DMI triazoli i imidazoli","focus":"Fizicke osobine","question":"Kako je opisan miklobutanil?","correct":"Bledo žuta čvrsta supstanca, slabo rastvorljiva u vodi, visok Ko/w","wrong":["Viskozna tečnost žućkasto-braon boje","Svetlo zeleni prah nesistemik","Beli kristal ekstremno rastvorljiv u vodi"],"explain":"Miklobutanil je sistemik sa preventivnim i kurativnim delovanjem.","level":"tesko","priority":-10,"topicIndex":11},{"id":147,"topic":"DMI triazoli i imidazoli","focus":"Sta suzbija","question":"Koji spektar je naveden za miklobutanil?","correct":"Venturia spp., Podosphaera leucotricha, Stigmina carpophila, Monilinia, Erysiphe, Puccinia, Phragmidium i Uromyces","wrong":["Samo Phytophthora infestans","Samo Pythium u rasadu","Samo Erwinia amylovora"],"explain":"Miklobutanil deluje na Ascomycetes, Basidiomycetes i Deuteromycetes.","level":"prolaz","priority":-15,"topicIndex":11},{"id":148,"topic":"DMI triazoli i imidazoli","focus":"Fizicke osobine","question":"Kako je opisan epoksikonazol?","correct":"Bezbojni kristali, slabo rastvorljiv u vodi, dobro u acetonu i dihlormetanu, visok Ko/w","wrong":["Žuta tečnost ekstremno rastvorljiva u vodi","Crveni prah za mineralna ulja","Svetlo zeleni nesistemik"],"explain":"Epoksikonazol ima preventivno i kurativno delovanje.","level":"tesko","priority":-10,"topicIndex":11},{"id":149,"topic":"DMI triazoli i imidazoli","focus":"Sta suzbija","question":"Koji patogeni su navedeni za epoksikonazol?","correct":"Blumeria graminis, Puccinia spp., Septoria graminicola i Cercospora beticola","wrong":["Plasmopara viticola isključivo","Pythium spp. isključivo","Penicillium digitatum isključivo"],"explain":"Koristi se u žitima, šećernoj repi, uljanoj repici i ukrasnim biljkama.","level":"prolaz","priority":-15,"topicIndex":11},{"id":150,"topic":"DMI triazoli i imidazoli","focus":"Fizicke osobine","question":"Kako je opisan ciprokonazol?","correct":"Bezbojna čvrsta supstanca, slabo rastvorljiva u vodi, dobro u acetonu i DMSO","wrong":["Crveni prah nerastvorljiv u kiselinama","Viskozna braon tečnost","Žuti elementarni prah"],"explain":"Ciprokonazol je sistemik sa protektivnim, kurativnim i eradikativnim delovanjem.","level":"ispit","priority":-10,"topicIndex":11},{"id":151,"topic":"DMI triazoli i imidazoli","focus":"Sta suzbija","question":"Koji patogeni su navedeni za ciprokonazol?","correct":"Blumeria graminis, Septoria tritici, Cercospora beticola, Erysiphe betae, Podosphaera leucotricha i Sclerotinia sclerotiorum","wrong":["Samo Phytophthora infestans","Samo alge","Samo bakterije"],"explain":"Skripta navodi više patogena iz različitih useva.","level":"prolaz","priority":-15,"topicIndex":11},{"id":152,"topic":"DMI triazoli i imidazoli","focus":"Fizicke osobine","question":"Kako je opisan imazalil?","correct":"Žućkasti kristali, slabo rastvorljiv u vodi, dobro u organskim rastvaračima, visok Ko/w","wrong":["Bela praškasta supstanca ekstremno rastvorljiva u vodi","Crveni prah za prezimljujuće forme","Svetlo zeleni prah za osmotski signal"],"explain":"Imazalil je sistemik sa protektivnim i kurativnim delovanjem.","level":"tesko","priority":-10,"topicIndex":11},{"id":153,"topic":"DMI triazoli i imidazoli","focus":"Sta suzbija","question":"Gde se imazalil dominantno primenjuje?","correct":"U prevenciji bolesti uskladištenog voća i povrća, naročito citrusa","wrong":["Isključivo u zaštiti krompira od plamenjače","Samo u suzbijanju alga u vodi","Samo u tretiranju vinove loze protiv Plasmopara"],"explain":"Posebno deluje na Penicillium, Aspergillus i Phoma.","level":"prolaz","priority":-15,"topicIndex":11},{"id":154,"topic":"DMI triazoli i imidazoli","focus":"Fizicke osobine","question":"Kako je opisan prohloraz?","correct":"Bezbojni kristali, slabo rastvorljiv u vodi, dobro u organskim rastvaračima, slabo isparljiv","wrong":["Viskozna tečnost ekstremno rastvorljiva u vodi","Žuti prah elementarnog sumpora","Bakarni plavo-zeleni prah"],"explain":"Prohloraz se delimično razlaže na sunčevoj svetlosti.","level":"ispit","priority":-10,"topicIndex":11},{"id":155,"topic":"DMI triazoli i imidazoli","focus":"Sta suzbija","question":"Koji spektar je naveden za prohloraz?","correct":"Septoria tritici, Monilinia, Ascochyta, Colletotrichum, Sclerotinia, Alternaria, Cercospora, Erysiphe, Fusarium i Cladobotryum","wrong":["Samo Pseudoperonospora cubensis","Samo alge u ribnjacima","Samo Erwinia amylovora"],"explain":"Prohloraz ima protektivno i kurativno delovanje u više useva.","level":"prolaz","priority":-15,"topicIndex":11},{"id":156,"topic":"SBI II i SBI III","focus":"Fizicke osobine","question":"Kako je opisan spiroksamin?","correct":"Žućkasta tečnost, dobro rastvorljiva u kiseloj sredini, slabo u neutralnoj i alkalnoj","wrong":["Beli kristal ekstremno rastvorljiv u vodi","Svetlo zeleni nesistemik","Crveni prah za prezimljujuće forme"],"explain":"Spiroksamin je srednje isparljiv, visokog Ko/w i kreće se akropetalno.","level":"tesko","priority":-10,"topicIndex":12},{"id":157,"topic":"SBI II i SBI III","focus":"Mehanizam","question":"Koji je mehanizam spiroksamina?","correct":"Blokira Δ14 reduktazu i Δ8-Δ7 izomerazu u kasnijim fazama biosinteze ergosterola","wrong":["Inhibira sintezu metionina","Blokira Qi mesto","Reaguje sa Cu jonima"],"explain":"Iako deluje u biosintezi sterola, nema ukrštene rezistentnosti sa DMI fungicidima.","level":"tesko","priority":-20,"topicIndex":12},{"id":158,"topic":"SBI II i SBI III","focus":"Sta suzbija","question":"Koji je osnovni spektar spiroksamina?","correct":"Erysiphe necator i Blumeria graminis","wrong":["Phytophthora infestans i Plasmopara viticola","Penicillium digitatum i Aspergillus","Erwinia amylovora"],"explain":"Skripta naglašava veoma uzak spektar, pepelnice vinove loze i pšenice.","level":"prolaz","priority":-25,"topicIndex":12},{"id":159,"topic":"SBI II i SBI III","focus":"Fizicke osobine","question":"Kako je opisan fenheksamid?","correct":"Beli prah, slabo rastvorljiv u vodi, bolje u organskim rastvaračima, visok Ko/w","wrong":["Žuta viskozna tečnost","Crveni prah rastvorljiv u amonijaku","Bezbojna tečnost ekstremno rastvorljiva u vodi"],"explain":"Fenheksamid je specifičan botriticid i ima kratku karencu.","level":"tesko","priority":-5,"topicIndex":12},{"id":160,"topic":"SBI II i SBI III","focus":"Mehanizam","question":"Koji je mehanizam fenheksamida?","correct":"Inhibira 3-keto-reduktazu u procesu C4 demetilacije","wrong":["Inhibira C14 demetilaciju kao triazoli","Inhibira sintezu metionina","Blokira beta-tubulin"],"explain":"Tipični je folijarni protektivni fungicid i ne translocira se u biljnom tkivu.","level":"tesko","priority":-20,"topicIndex":12},{"id":161,"topic":"SBI II i SBI III","focus":"Sta suzbija","question":"Koji je spektar fenheksamida?","correct":"Botrytis cinerea, Monilinia spp. i Sclerotinia spp.","wrong":["Plamenjače Oomycetes isključivo","Samo Erysiphe necator","Samo bakterioze"],"explain":"Koristi se uglavnom za B. cinerea na jagodastom voću i vinovoj lozi.","level":"prolaz","priority":-15,"topicIndex":12},{"id":162,"topic":"Cimoksanil, ciflufenamid i fosetil-Al","focus":"Fizicke osobine","question":"Kako je opisan cimoksanil?","correct":"Bezbojni kristali bez mirisa, umereno rastvorljiv u vodi, bolje u organskim rastvaračima","wrong":["Crveni prah nerastvorljiv u vodi","Žuta elementarna supstanca","Svetlo zeleni nesistemik"],"explain":"Cimoksanil je lokal-sistemik sa protektivnim i kurativnim delovanjem.","level":"ispit","priority":-10,"topicIndex":13},{"id":163,"topic":"Cimoksanil, ciflufenamid i fosetil-Al","focus":"Mehanizam","question":"Koji je mehanizam cimoksanila u skripti?","correct":"Nepoznat mehanizam delovanja","wrong":["Inhibicija C14 demetilacije","Blokada beta-tubulina","Inhibicija histidin kinaze"],"explain":"Skripta ga svrstava u fungicide sa nepoznatim mehanizmom delovanja.","level":"prolaz","priority":-20,"topicIndex":13},{"id":164,"topic":"Cimoksanil, ciflufenamid i fosetil-Al","focus":"Sta suzbija","question":"Koji je spektar cimoksanila?","correct":"Oomycetes: Plasmopara viticola, Phytophthora infestans i Pseudoperonospora cubensis","wrong":["Samo Botrytis cinerea","Samo skladišni Penicillium","Samo rđe"],"explain":"Cimoksanil ima snažno antisporulativno delovanje, ali kratku rezidualnu aktivnost.","level":"prolaz","priority":-20,"topicIndex":13},{"id":165,"topic":"Cimoksanil, ciflufenamid i fosetil-Al","focus":"Fizicke osobine","question":"Kako je opisan ciflufenamid?","correct":"Bela čvrsta supstanca slabog aromatičnog mirisa, nerastvorljiva u vodi, dobro rastvorljiva u organskim rastvaračima","wrong":["Viskozna tečnost ekstremno rastvorljiva u vodi","Crveni prah za prezimljujuće forme","Bakarni plavo-zeleni prah"],"explain":"Relativno je isparljiv i može delovati i parama.","level":"ispit","priority":-10,"topicIndex":13},{"id":166,"topic":"Cimoksanil, ciflufenamid i fosetil-Al","focus":"Mehanizam","question":"Šta ciflufenamid inhibira u razvoju pepelnica?","correct":"Formiranje i razvoj haustorija, porast hifa i formiranje konidiofora","wrong":["Samo oslobađanje zoospora","Samo sintezu metionina","Samo respiraciju na Qp mestu"],"explain":"Mehanizam je nepoznat, ali se navode efekti na deobu, sterole, lipide, membrane i disanje.","level":"prolaz","priority":-25,"topicIndex":13},{"id":167,"topic":"Cimoksanil, ciflufenamid i fosetil-Al","focus":"Sta suzbija","question":"Koji je spektar ciflufenamida?","correct":"Pepelnice iz Erysiphaceae kao Blumeria graminis, Erysiphe necator i Podosphaera leucotricha","wrong":["Plamenjače krompira isključivo","Bakterioze paprike","Alge u ribnjacima"],"explain":"Ciflufenamid je lokal-sistemik sa translaminarnim kretanjem.","level":"prolaz","priority":-15,"topicIndex":13},{"id":168,"topic":"Cimoksanil, ciflufenamid i fosetil-Al","focus":"Fizicke osobine","question":"Kako je opisan fosetil-aluminijum?","correct":"Beli do svetložuti prah, ekstremno rastvorljiv u vodi, veoma nizak Ko/w","wrong":["Crveni prah nerastvorljiv u vodi","Žuta tečnost koja deluje gasnom fazom","Svetlo zeleni prah za skladište"],"explain":"Fosetil-Al je slabo isparljiv i sistemično se kreće u oba pravca.","level":"tesko","priority":-5,"topicIndex":13},{"id":169,"topic":"Cimoksanil, ciflufenamid i fosetil-Al","focus":"Mehanizam","question":"Šta je posebno kod delovanja fosetil-Al u biljci?","correct":"Simulira hipersenzitivnu reakciju i produkciju fitoaleksina","wrong":["Pretvara se u karbendazim","Oslobađa Cu jone iz kreča","Blokira beta-tubulin"],"explain":"Pored direktnog uticaja na klijanje spora i miceliju, podstiče odbrambene reakcije biljke.","level":"prolaz","priority":-25,"topicIndex":13},{"id":170,"topic":"Cimoksanil, ciflufenamid i fosetil-Al","focus":"Sta suzbija","question":"Koji je spektar fosetil-Al?","correct":"Plamenjače kao P. viticola, P. infestans, P. cubensis, P. humuli i Bremia lactucae, plus Erwinia amylovora","wrong":["Samo pepelnice vinove loze","Samo Botrytis cinerea","Samo Fusarium na semenu"],"explain":"Dominantno se primenjuje u vinovoj lozi i tikvenjačama.","level":"prolaz","priority":-20,"topicIndex":13},{"id":171,"topic":"Kvinolini, fenilpiroli, karbamati i anilinopirimidini","focus":"Fizicke osobine","question":"Kako je opisan kvinoksifen?","correct":"Bezbojna čvrsta supstanca, slabo rastvorljiva u vodi, visok Ko/w i delimično delovanje gasnom fazom","wrong":["Bela tečnost ekstremno rastvorljiva u vodi","Žuti prah elementarnog sumpora","Svetlo zeleni prah za osmotski put"],"explain":"Kvinoksifen je sistemik, kreće se akropetalno i bazipetalno i otporan je na kišu.","level":"tesko","priority":-10,"topicIndex":14},{"id":172,"topic":"Kvinolini, fenilpiroli, karbamati i anilinopirimidini","focus":"Sta suzbija","question":"Šta kvinoksifen suzbija?","correct":"Pepelnice kao Erysiphe necator i Blumeria graminis f. sp. tritici i hordei","wrong":["Plasmopara viticola isključivo","Pythium spp. u rasadu","Erwinia amylovora"],"explain":"Koristi se za vinovu lozu i strna žita.","level":"prolaz","priority":-20,"topicIndex":14},{"id":173,"topic":"Kvinolini, fenilpiroli, karbamati i anilinopirimidini","focus":"Fizicke osobine","question":"Kako je opisan prokvinazid?","correct":"Bela kristalna supstanca, slabo rastvorljiva u vodi, visok Ko/w, lokal-sistemik translaminaran","wrong":["Crveni prah za prezimljujuće forme","Viskozna tečnost dobro rastvorljiva u vodi","Žuti prah koji prelazi u sulfide"],"explain":"Prokvinazid ima dugotrajno preventivno i ograničeno kurativno delovanje.","level":"tesko","priority":-10,"topicIndex":14},{"id":174,"topic":"Kvinolini, fenilpiroli, karbamati i anilinopirimidini","focus":"Mehanizam","question":"Kako deluju kvinoksifen i prokvinazid?","correct":"Ometaju prenos signala potreban za diferencijaciju konidija odnosno apresorija","wrong":["Inhibiraju sintezu metionina","Blokiraju beta-tubulin","Indukuju samo curenje membrane"],"explain":"Kvinoksifen cilja diferencijaciju konidija, a prokvinazid formiranje apresorija.","level":"prolaz","priority":-20,"topicIndex":14},{"id":175,"topic":"Kvinolini, fenilpiroli, karbamati i anilinopirimidini","focus":"Fizicke osobine","question":"Kako je opisan fludioksonil?","correct":"Svetlo zeleni prah, slabo rastvorljiv u vodi, nesistemik sa preventivnim svojstvima","wrong":["Bela tečnost ekstremno rastvorljiva u vodi","Crveni prah za mineralna ulja","Žuta viskozna tečnost"],"explain":"Lipofilnost omogućava čvrsto vezivanje za površinski voštani sloj.","level":"ispit","priority":-5,"topicIndex":14},{"id":176,"topic":"Kvinolini, fenilpiroli, karbamati i anilinopirimidini","focus":"Mehanizam","question":"Koji je mehanizam fludioksonila?","correct":"Inhibira histidin kinazu u osmotskom prenosu signala i dovodi do nagomilavanja glicerola","wrong":["Inhibira C14 demetilaciju","Blokira sintezu metionina","Inhibira ugradnju uridina u UTP"],"explain":"Poremećaj osmoregulacije može dovesti do pucanja ćelije.","level":"tesko","priority":-20,"topicIndex":14},{"id":177,"topic":"Kvinolini, fenilpiroli, karbamati i anilinopirimidini","focus":"Sta suzbija","question":"Koji spektar je naveden za fludioksonil?","correct":"Botrytis, Sclerotinia, Monilinia, Penicillium, Alternaria, Colletotrichum, Aspergillus, Mucor i semenski patogeni","wrong":["Samo Oomycetes","Samo bakterije","Samo alge"],"explain":"Koristi se i za tretiranje semena pšenice, ječma i kukuruza.","level":"prolaz","priority":-15,"topicIndex":14},{"id":178,"topic":"Kvinolini, fenilpiroli, karbamati i anilinopirimidini","focus":"Fizicke osobine","question":"Kako je opisan propamokarb?","correct":"Bezbojni higroskopni kristal, odlično rastvorljiv u vodi, sistemik","wrong":["Svetlo zeleni prah nesistemik","Crveni prah nerastvorljiv u vodi","Beli kristal koji deluje samo na pepelnice"],"explain":"Usvaja se korenom i listom i translocira ksilemom.","level":"ispit","priority":-10,"topicIndex":14},{"id":179,"topic":"Kvinolini, fenilpiroli, karbamati i anilinopirimidini","focus":"Mehanizam","question":"Kako propamokarb deluje na ćelijsku membranu?","correct":"Utiče na biosintezu fosfolipida i masnih kiselina, izaziva curenje ćelijskog sadržaja","wrong":["Blokira C14 demetilaciju","Inhibira sintezu metionina","Oslobađa Cu jone"],"explain":"Deluje kada je u kontaktu sa pseudogljivom tokom rasta, pa je kurativnost ograničena.","level":"prolaz","priority":-20,"topicIndex":14},{"id":180,"topic":"Kvinolini, fenilpiroli, karbamati i anilinopirimidini","focus":"Sta suzbija","question":"Koji je spektar propamokarba?","correct":"Oomycetes: Phytophthora, Bremia, Peronospora, Pseudoperonospora i Pythium","wrong":["Samo Botrytis i Monilinia","Samo pepelnice","Samo bakterije"],"explain":"Primena je moguća preko zemljišta, zalivanjem, potapanjem, tretiranjem semena i folijarno.","level":"prolaz","priority":-15,"topicIndex":14},{"id":181,"topic":"Kvinolini, fenilpiroli, karbamati i anilinopirimidini","focus":"Fizicke osobine","question":"Kako je opisan pirimetanil?","correct":"Bezbojan kristal, slabo rastvorljiv u vodi, dobro u acetonu i organskim rastvaračima, sistemik","wrong":["Crveni prah za prezimljujuće forme","Bela tečnost ekstremno rastvorljiva u vodi","Žuti elementarni prah"],"explain":"Pirimetanil se translocira kroz apoplast lista.","level":"ispit","priority":-10,"topicIndex":14},{"id":182,"topic":"Kvinolini, fenilpiroli, karbamati i anilinopirimidini","focus":"Fizicke osobine","question":"Kako je opisan ciprodinil?","correct":"Bež prah slabog mirisa, slabo rastvorljiv u vodi, sistemik sa akropetalnim kretanjem ksilemom","wrong":["Viskozna tečnost žućkasto-braon boje","Crveni prah rastvorljiv u amonijaku","Svetlo zeleni nesistemik"],"explain":"Ciprodinil ima preventivnu aktivnost na klijanje spora, haustorije, rast micelije i sporulaciju.","level":"ispit","priority":-5,"topicIndex":14},{"id":183,"topic":"Kvinolini, fenilpiroli, karbamati i anilinopirimidini","focus":"Mehanizam","question":"Koji je mehanizam anilinopirimidina?","correct":"Inhibiraju sintezu metionina i utiču na sekreciju hidrolitičkih enzima","wrong":["Inhibiraju C14 demetilaciju","Blokiraju Qi mesto","Oslobađaju Cu jone"],"explain":"Pirimetanil i ciprodinil ometaju penetraciju patogena u biljno tkivo.","level":"prolaz","priority":-20,"topicIndex":14},{"id":184,"topic":"Kvinolini, fenilpiroli, karbamati i anilinopirimidini","focus":"Sta suzbija","question":"Koji spektar je naveden za anilinopirimidine?","correct":"Botrytis, Monilinia, Sclerotinia, Alternaria, Venturia, Blumeria, Ascochyta, Aspergillus i Penicillium","wrong":["Samo plamenjače","Samo bakterije","Samo alge"],"explain":"Skripta posebno navodi i Venturia inaequalis i Penicillium expansum u kontekstu rezistentnosti.","level":"tesko","priority":-15,"topicIndex":14},{"id":185,"topic":"Kvinolini, fenilpiroli, karbamati i anilinopirimidini","focus":"Rezistentnost","question":"Kod kojih populacija je potvrđena rezistentnost na anilinopirimidine?","correct":"Botrytis cinerea, Venturia inaequalis i Penicillium expansum","wrong":["Samo Erwinia amylovora","Samo Plasmopara halstedii","Samo Tilletia tritici"],"explain":"Mehanizam je mutacija na ciljanom mestu delovanja.","level":"tesko","priority":0,"topicIndex":14},{"id":186,"topic":"Rezistentnost i strategija","focus":"Rezistentnost","question":"Kako se definiše rezistentnost gljiva na fungicide?","correct":"Sposobnost rase, soja ili populacije da toleriše doze letalne za normalno osetljive populacije","wrong":["Privremeno ispiranje fungicida kišom","Svaka fitotoksičnost na biljci","Samo prirodna otpornost Oomycetes na bakar"],"explain":"Rezistentnost je nasledna i javlja se kao posledica primene pesticida.","level":"tesko","priority":0,"topicIndex":15},{"id":187,"topic":"Rezistentnost i strategija","focus":"Rezistentnost","question":"Koja su četiri osnovna mehanizma razvoja rezistentnosti?","correct":"Promena mesta delovanja, detoksikacija, hiperekspresija cilja i eliminacija fungicida","wrong":["Fotosinteza, transpiracija, respiracija i oplodnja","Bakar, sumpor, kreč i voda","Samo mutacije G143A i F129L"],"explain":"Skripta navodi četiri mehanizma rezistentnosti.","level":"tesko","priority":-5,"topicIndex":15},{"id":188,"topic":"Rezistentnost i strategija","focus":"Rezistentnost","question":"Šta je najčešći mehanizam rezistentnosti?","correct":"Promena mesta delovanja usled mutacija","wrong":["Povećana rastvorljivost fungicida u vodi","Smanjenje količine voska na listu","Pojava algicidnog efekta"],"explain":"Mutacije menjaju aminokiselinsku sekvencu i fungicid slabije prepoznaje ciljno mesto.","level":"tesko","priority":-5,"topicIndex":15},{"id":189,"topic":"Rezistentnost i strategija","focus":"Rezistentnost","question":"Koji primer promene ciljnog mesta je naveden za strobilurine?","correct":"G143A i F129L na citohrom b genu","wrong":["CYP51A1 kod svih QoI fungicida","S34L kod bakra","HOG mutacija kod sumpora"],"explain":"G143A znači zamenu glicina alaninom, a F129L fenilalanina leucinom.","level":"tesko","priority":-5,"topicIndex":15},{"id":190,"topic":"Rezistentnost i strategija","focus":"Rezistentnost","question":"Kako detoksikacija može smanjiti delovanje fungicida?","correct":"Gljive mogu prevesti molekul fungicida u neaktivan oblik ili izbeći bioaktivaciju pro-fungicida","wrong":["Gljive povećaju isparljivost vode na listu","Fungicid se pretvara u kreč","Spore se pretvore u bakterije"],"explain":"Ako bioaktivacija pro-fungicida izostane, fungicidni efekat može oslabiti ili nestati.","level":"tesko","priority":0,"topicIndex":15},{"id":191,"topic":"Rezistentnost i strategija","focus":"Rezistentnost","question":"Šta znači hiperekspresija ciljnog mesta delovanja?","correct":"Organizam proizvodi više prirodnog supstrata/cilja pa se metabolički proces nastavlja uprkos fungicidu","wrong":["Fungicid se ispira kišom","Biljka stvara više voska","Patogen gubi sve spore"],"explain":"Molekuli fungicida se takmiče sa prirodnim supstratom za cilj.","level":"tesko","priority":-5,"topicIndex":15},{"id":192,"topic":"Rezistentnost i strategija","focus":"Rezistentnost","question":"Kako eliminacija fungicida doprinosi rezistentnosti?","correct":"Efluksne pumpe izbacuju dovoljno fungicida iz ćelije da se spreči fungitoksično delovanje","wrong":["Fungicid se pretvara u bakar-sulfat","Biljka formira više plodova","Povećava se koncentracija fungicida u ćeliji"],"explain":"Efluksne pumpe uklanjaju ksenobiotike iz ćelije.","level":"tesko","priority":0,"topicIndex":15},{"id":193,"topic":"Rezistentnost i strategija","focus":"Rezistentnost","question":"Koji faktori patogena povećavaju rizik rezistentnosti?","correct":"Polna faza, policikličnost, velika produkcija spora i nadzemno širenje","wrong":["Samo mala produkcija spora","Samo odsustvo polne faze","Samo patogeni u zemljištu bez širenja"],"explain":"Više ciklusa i lakše širenje povećavaju mešanje populacija i nove genotipove.","level":"tesko","priority":0,"topicIndex":15},{"id":194,"topic":"Rezistentnost i strategija","focus":"Rezistentnost","question":"Koji fungicidi nose veći rizik rezistentnosti?","correct":"Single-site fungicidi, naročito uz čestu primenu i oslanjanje na kurativnost","wrong":["Multi-site fungicidi koji se koriste preventivno","Samo bakarni preparati","Samo sumpor u prahu"],"explain":"Specifičan mehanizam i ponovljena primena povećavaju selekcioni pritisak.","level":"tesko","priority":0,"topicIndex":15},{"id":195,"topic":"Rezistentnost i strategija","focus":"Rezistentnost","question":"Zašto kurativna i eradikativna primena posle simptoma povećava rizik?","correct":"Sistemični fungicid tada često deluje sam, a patogen već ima sporulacione lezije","wrong":["Zato što preventivni partner tada deluje jače","Zato što nema živih patogena","Zato što se rezistentnost javlja samo bez simptoma"],"explain":"Postinfekciona primena povećava šansu selekcije otpornih biotipova.","level":"tesko","priority":0,"topicIndex":15},{"id":196,"topic":"Rezistentnost i strategija","focus":"Rezistentnost","question":"Šta je antirezistentna strategija?","correct":"Skup mera za odlaganje ili sprečavanje pojave rezistentnosti gljiva na fungicide","wrong":["Primena jedne aktivne materije više puta zaredom","Smanjivanje doza da bi patogen preživeo","Tretiranje samo kada pada jaka kiša"],"explain":"Strategija obuhvata hemijske i nehemijske mere.","level":"tesko","priority":-5,"topicIndex":15},{"id":197,"topic":"Rezistentnost i strategija","focus":"Rezistentnost","question":"Koji je princip integralne zaštite u antirezistentnoj strategiji?","correct":"Korišćenje nehemijskih mera kao otpornije sorte, uklanjanje inokuluma i biološki preparati","wrong":["Oslanjanje samo na kurativni sistemik","Upotreba subefektivnih doza","Primena istog mehanizma cele sezone"],"explain":"Nehemijske mere smanjuju pritisak bolesti i potrebu za fungicidima.","level":"tesko","priority":0,"topicIndex":15},{"id":198,"topic":"Rezistentnost i strategija","focus":"Rezistentnost","question":"Zašto se sistemični fungicidi kombinuju sa preventivnim?","correct":"Preventivni partner smanjuje selekcioni pritisak i suzbija rezistentne biotipove","wrong":["Da bi se povećala ukrštena rezistentnost","Da bi sistemik delovao isključivo sam","Da bi se izbegao svaki kontaktni efekat"],"explain":"Multi-site partner sprečava infekciju i smanjuje oslanjanje na kurativnost sistemika.","level":"tesko","priority":0,"topicIndex":15},{"id":199,"topic":"Rezistentnost i strategija","focus":"Rezistentnost","question":"Zašto treba primenjivati pune preporučene doze?","correct":"Subefektivne doze favorizuju preživljavanje i razvoj rezistentnih biotipova","wrong":["Manje doze uvek bolje sprečavaju rezistentnost","Doza nema nikakav značaj","Pune doze su potrebne samo kod bakra"],"explain":"Skripta posebno upozorava da smanjene doze mogu indukovati otpornost.","level":"tesko","priority":0,"topicIndex":15},{"id":200,"topic":"Rezistentnost i strategija","focus":"Rezistentnost","question":"Koliko najviše tretiranja u sezoni se preporučuje za fungicide visokog rizika?","correct":"Maksimalno dva tretiranja u toku vegetacione sezone","wrong":["Neograničeno","Samo jedno u životu biljke","Tačno deset"],"explain":"Rotacija mehanizama delovanja smanjuje selekcioni pritisak.","level":"tesko","priority":0,"topicIndex":15},{"id":201,"topic":"Rezistentnost i strategija","focus":"Rezistentnost","question":"Zašto treba izbegavati tretiranje u nepovoljnim meteo-uslovima?","correct":"Gubi se deo aktivne materije pa preostala količina može biti subefektivna","wrong":["Zato što tada fungicid postaje sistemičniji","Zato što se tada rezistentnost ne može razviti","Zato što kiša uvek povećava dozu"],"explain":"Spiranje, termodegradacija i zanošenje mogu imati isti efekat kao smanjena doza.","level":"tesko","priority":-5,"topicIndex":15}];
+    var STORAGE_KEY = "fungicidi_1_mistakes_v2";
+    var state = {
+      deck: [],
+      index: 0,
+      score: 0,
+      answered: false,
+      mode: "ucenje",
+      selectedTopic: "",
+      selectedFocus: "",
+      selectedCount: "20",
+      missed: []
+    };
+
+    function getMistakes() {
+      try {
+        var raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveMistakes(ids) {
+      var unique = [];
+      var seen = {};
+      for (var i = 0; i < ids.length; i++) {
+        if (!seen[ids[i]]) {
+          seen[ids[i]] = true;
+          unique.push(ids[i]);
+        }
+      }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(unique));
+    }
+
+    function addMistake(id) {
+      var ids = getMistakes();
+      ids.push(id);
+      saveMistakes(ids);
+    }
+
+    function removeMistake(id) {
+      var ids = getMistakes().filter(function (x) { return x !== id; });
+      saveMistakes(ids);
+    }
+
+    function shuffle(arr) {
+      var copy = arr.slice();
+      for (var i = copy.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = copy[i];
+        copy[i] = copy[j];
+        copy[j] = tmp;
+      }
+      return copy;
+    }
+
+    function levelName(level) {
+      if (level === "prolaz") return "Prolaz";
+      if (level === "ispit") return "Ispit";
+      return "Tesko";
+    }
+
+    function modeName(mode) {
+      if (mode === "ucenje") return "Ucenje";
+      if (mode === "prolaz") return "Prolaz";
+      if (mode === "ispit") return "Ispit";
+      if (mode === "tesko") return "Tesko";
+      if (mode === "greske") return "Samo greske";
+      return "Sve";
+    }
+
+    function uniqueTopics() {
+      var seen = {};
+      var list = [];
+      for (var i = 0; i < QUESTIONS.length; i++) {
+        if (!seen[QUESTIONS[i].topic]) {
+          seen[QUESTIONS[i].topic] = true;
+          list.push(QUESTIONS[i].topic);
+        }
+      }
+      return list;
+    }
+
+    function fillSelects() {
+      var topicSelect = document.getElementById("topicSelect");
+      topicSelect.innerHTML = "";
+      var all = document.createElement("option");
+      all.value = "";
+      all.textContent = "Sve";
+      topicSelect.appendChild(all);
+      var topics = uniqueTopics();
+      for (var i = 0; i < topics.length; i++) {
+        var opt = document.createElement("option");
+        opt.value = topics[i];
+        opt.textContent = topics[i];
+        topicSelect.appendChild(opt);
+      }
+      updateBadge();
+    }
+
+    function updateBadge() {
+      document.getElementById("bankSize").textContent = QUESTIONS.length + " pitanja | greske " + getMistakes().length;
+    }
+
+    function sortForLearning(list) {
+      return list.slice().sort(function (a, b) {
+        var levelOrder = { prolaz: 0, ispit: 1, tesko: 2 };
+        if (levelOrder[a.level] !== levelOrder[b.level]) return levelOrder[a.level] - levelOrder[b.level];
+        if (a.topicIndex !== b.topicIndex) return a.topicIndex - b.topicIndex;
+        if (a.priority !== b.priority) return a.priority - b.priority;
+        return a.id - b.id;
+      });
+    }
+
+    function buildDeck() {
+      var mode = document.getElementById("modeSelect").value;
+      var topic = document.getElementById("topicSelect").value;
+      var focus = document.getElementById("focusSelect").value;
+      var count = document.getElementById("countSelect").value;
+      var mistakeIds = getMistakes();
+      var filtered = [];
+
+      for (var i = 0; i < QUESTIONS.length; i++) {
+        var item = QUESTIONS[i];
+        if (topic && item.topic !== topic) continue;
+        if (focus && item.focus !== focus) continue;
+        if (mode === "prolaz" && item.level !== "prolaz") continue;
+        if (mode === "ispit" && item.level === "tesko") continue;
+        if (mode === "tesko" && item.level !== "tesko") continue;
+        if (mode === "greske" && mistakeIds.indexOf(item.id) === -1) continue;
+        filtered.push(item);
+      }
+
+      if (mode === "ucenje") {
+        filtered = sortForLearning(filtered);
+      } else if (mode === "prolaz") {
+        filtered = shuffle(sortForLearning(filtered).slice(0, Math.max(filtered.length, 1)));
+      } else {
+        filtered = shuffle(filtered);
+      }
+
+      if (count !== "all") filtered = filtered.slice(0, parseInt(count, 10));
+
+      state.deck = filtered;
+      state.index = 0;
+      state.score = 0;
+      state.answered = false;
+      state.mode = mode;
+      state.selectedTopic = topic;
+      state.selectedFocus = focus;
+      state.selectedCount = count;
+      state.missed = [];
+    }
+
+    function showPanel(id) {
+      document.getElementById("setupPanel").className = "panel hidden";
+      document.getElementById("quizPanel").className = "panel hidden";
+      document.getElementById("resultPanel").className = "panel result hidden";
+      document.getElementById(id).className = id === "resultPanel" ? "panel result" : "panel";
+    }
+
+    function startQuiz() {
+      buildDeck();
+      if (!state.deck.length) {
+        alert("Nema pitanja za ovaj izbor.");
+        return;
+      }
+      showPanel("quizPanel");
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      var item = state.deck[state.index];
+      state.answered = false;
+      document.getElementById("progressText").textContent = "Pitanje " + (state.index + 1) + "/" + state.deck.length;
+      document.getElementById("scoreText").textContent = state.mode === "ucenje" ? "Ucenje" : "Tacno " + state.score;
+      document.getElementById("bar").style.width = Math.round((state.index / state.deck.length) * 100) + "%";
+      document.getElementById("modePill").textContent = modeName(state.mode);
+      document.getElementById("topicPill").textContent = item.topic;
+      document.getElementById("focusPill").textContent = item.focus;
+      var levelPill = document.getElementById("levelPill");
+      levelPill.textContent = levelName(item.level);
+      levelPill.className = "pill level-" + item.level;
+      document.getElementById("questionText").textContent = item.question;
+      document.getElementById("reveal").style.display = "none";
+      document.getElementById("reveal").innerHTML = "";
+      document.getElementById("nextBtn").disabled = state.mode !== "ucenje";
+      document.getElementById("markBtn").textContent = state.mode === "ucenje" ? "Ne znam" : "Sacuvaj gresku";
+
+      var answers = [{ text: item.correct, ok: true }].concat(item.wrong.map(function (w) {
+        return { text: w, ok: false };
+      }));
+      if (state.mode !== "ucenje") answers = shuffle(answers);
+
+      var wrap = document.getElementById("answers");
+      wrap.innerHTML = "";
+      for (var i = 0; i < answers.length; i++) {
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "answer";
+        btn.textContent = answers[i].text;
+        btn.setAttribute("data-ok", answers[i].ok ? "1" : "0");
+        btn.addEventListener("click", chooseAnswer);
+        wrap.appendChild(btn);
+      }
+
+      if (state.mode === "ucenje") {
+        showReveal(item, "Odgovor");
+        var buttons = wrap.getElementsByTagName("button");
+        for (var j = 0; j < buttons.length; j++) {
+          buttons[j].disabled = true;
+          if (buttons[j].getAttribute("data-ok") === "1") buttons[j].className = "answer correct";
+        }
+      }
+    }
+
+    function showReveal(item, title) {
+      var box = document.getElementById("reveal");
+      box.innerHTML = "<strong>" + title + ": " + item.correct + "</strong><div>" + item.explain + "</div>";
+      box.style.display = "block";
+    }
+
+    function chooseAnswer(evt) {
+      if (state.answered || state.mode === "ucenje") return;
+      state.answered = true;
+      var item = state.deck[state.index];
+      var btn = evt.currentTarget;
+      var ok = btn.getAttribute("data-ok") === "1";
+      var buttons = document.getElementById("answers").getElementsByTagName("button");
+      for (var i = 0; i < buttons.length; i++) {
+        buttons[i].disabled = true;
+        if (buttons[i].getAttribute("data-ok") === "1") buttons[i].className = "answer correct";
+      }
+      if (ok) {
+        state.score += 1;
+        removeMistake(item.id);
+      } else {
+        btn.className = "answer wrong";
+        addMistake(item.id);
+        state.missed.push(item);
+      }
+      document.getElementById("scoreText").textContent = "Tacno " + state.score;
+      showReveal(item, ok ? "Tacno" : "Tacan odgovor");
+      document.getElementById("nextBtn").disabled = false;
+      updateBadge();
+    }
+
+    function markCurrent() {
+      var item = state.deck[state.index];
+      addMistake(item.id);
+      if (state.missed.indexOf(item) === -1) state.missed.push(item);
+      showReveal(item, "Sacuvano za ponavljanje");
+      document.getElementById("nextBtn").disabled = false;
+      state.answered = true;
+      updateBadge();
+    }
+
+    function nextQuestion() {
+      if (state.mode !== "ucenje" && !state.answered) return;
+      state.index += 1;
+      if (state.index >= state.deck.length) finishQuiz();
+      else renderQuestion();
+    }
+
+    function finishQuiz() {
+      document.getElementById("bar").style.width = "100%";
+      showPanel("resultPanel");
+      var percent = state.mode === "ucenje" ? null : Math.round((state.score / state.deck.length) * 100);
+      document.getElementById("resultTitle").textContent = state.mode === "ucenje" ? "Krug ucenja zavrsen" : state.score + "/" + state.deck.length + " (" + percent + "%)";
+      var advice = "Sledeci korak: ";
+      if (state.mode === "ucenje") advice += "uradi Prolaz dok ne bude 80%+.";
+      else if (percent >= 85 && state.mode === "prolaz") advice += "predji na Ispit.";
+      else if (percent >= 80 && state.mode === "ispit") advice += "uradi Tesko i zatim Samo greske.";
+      else if (percent >= 75) advice += "ponovi Samo greske.";
+      else advice += "vrati se na Ucenje za iste teme.";
+      document.getElementById("resultText").textContent = modeName(state.mode) + " | " + advice;
+
+      var review = document.getElementById("review");
+      review.innerHTML = "";
+      var list = state.missed.slice(0, 20);
+      if (!list.length) {
+        var ok = document.createElement("div");
+        ok.className = "review-item";
+        ok.textContent = state.mode === "ucenje" ? "Nista nije oznaceno kao nepoznato." : "Bez gresaka u ovom krugu.";
+        review.appendChild(ok);
+        return;
+      }
+      for (var i = 0; i < list.length; i++) {
+        var div = document.createElement("div");
+        div.className = "review-item";
+        div.innerHTML = "<strong>" + list[i].question + "</strong><div>Tacno: " + list[i].correct + "</div><div>" + list[i].explain + "</div>";
+        review.appendChild(div);
+      }
+    }
+
+    function restartSame() {
+      document.getElementById("modeSelect").value = state.mode;
+      document.getElementById("topicSelect").value = state.selectedTopic;
+      document.getElementById("focusSelect").value = state.selectedFocus;
+      document.getElementById("countSelect").value = state.selectedCount;
+      startQuiz();
+    }
+
+    function startMistakes() {
+      document.getElementById("modeSelect").value = "greske";
+      document.getElementById("topicSelect").value = "";
+      document.getElementById("focusSelect").value = "";
+      document.getElementById("countSelect").value = "all";
+      startQuiz();
+    }
+
+    function backToSetup() {
+      showPanel("setupPanel");
+      updateBadge();
+    }
+
+    document.getElementById("startBtn").addEventListener("click", startQuiz);
+    document.getElementById("nextBtn").addEventListener("click", nextQuestion);
+    document.getElementById("restartBtn").addEventListener("click", restartSame);
+    document.getElementById("markBtn").addEventListener("click", markCurrent);
+    document.getElementById("newQuizBtn").addEventListener("click", backToSetup);
+    document.getElementById("sameQuizBtn").addEventListener("click", restartSame);
+    document.getElementById("mistakesBtn").addEventListener("click", startMistakes);
+    fillSelects();
+  </script>
+</body>
+</html>
