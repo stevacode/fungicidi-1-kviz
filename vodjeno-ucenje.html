@@ -335,12 +335,16 @@
         }
       }
       localStorage.setItem(STORAGE_KEY, JSON.stringify(unique));
+      return unique.length;
     }
 
     function addMistake(id) {
       var ids = getMistakes();
+      if (ids.indexOf(id) !== -1) {
+        return { added: false, count: ids.length };
+      }
       ids.push(id);
-      saveMistakes(ids);
+      return { added: true, count: saveMistakes(ids) };
     }
 
     function removeMistake(id) {
@@ -404,7 +408,9 @@
     }
 
     function updateBadge() {
-      document.getElementById("bankSize").textContent = QUESTIONS.length + " pitanja | greske " + getMistakes().length;
+      var count = getMistakes().length;
+      document.getElementById("bankSize").textContent = QUESTIONS.length + " pitanja | Greske: " + count;
+      return count;
     }
 
     function sortForLearning(list) {
@@ -490,7 +496,10 @@
       document.getElementById("reveal").style.display = "none";
       document.getElementById("reveal").innerHTML = "";
       document.getElementById("nextBtn").disabled = state.mode !== "ucenje";
-      document.getElementById("markBtn").textContent = state.mode === "ucenje" ? "Ne znam" : "Sacuvaj gresku";
+      var alreadySaved = getMistakes().indexOf(item.id) !== -1;
+      var markBtn = document.getElementById("markBtn");
+      markBtn.disabled = false;
+      markBtn.textContent = alreadySaved ? "Vec u greskama" : (state.mode === "ucenje" ? "Ne znam - dodaj" : "Sacuvaj gresku");
 
       var answers = [{ text: item.correct, ok: true }].concat(item.wrong.map(function (w) {
         return { text: w, ok: false };
@@ -552,10 +561,17 @@
 
     function markCurrent() {
       var item = state.deck[state.index];
-      addMistake(item.id);
+      var result = addMistake(item.id);
       if (state.missed.indexOf(item) === -1) state.missed.push(item);
-      showReveal(item, "Sacuvano za ponavljanje");
+      var buttons = document.getElementById("answers").getElementsByTagName("button");
+      for (var i = 0; i < buttons.length; i++) {
+        buttons[i].disabled = true;
+        if (buttons[i].getAttribute("data-ok") === "1") buttons[i].className = "answer correct";
+      }
+      showReveal(item, result.added ? "Dodato u greske" : "Vec je u greskama");
       document.getElementById("nextBtn").disabled = false;
+      document.getElementById("markBtn").textContent = result.added ? "Sacuvano" : "Vec je u greskama";
+      document.getElementById("markBtn").disabled = true;
       state.answered = true;
       updateBadge();
     }
