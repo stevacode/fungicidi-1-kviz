@@ -335,16 +335,12 @@
         }
       }
       localStorage.setItem(STORAGE_KEY, JSON.stringify(unique));
-      return unique.length;
     }
 
     function addMistake(id) {
       var ids = getMistakes();
-      if (ids.indexOf(id) !== -1) {
-        return { added: false, count: ids.length };
-      }
       ids.push(id);
-      return { added: true, count: saveMistakes(ids) };
+      saveMistakes(ids);
     }
 
     function removeMistake(id) {
@@ -408,9 +404,7 @@
     }
 
     function updateBadge() {
-      var count = getMistakes().length;
-      document.getElementById("bankSize").textContent = QUESTIONS.length + " pitanja | Greske: " + count;
-      return count;
+      document.getElementById("bankSize").textContent = QUESTIONS.length + " pitanja | greske " + getMistakes().length;
     }
 
     function sortForLearning(list) {
@@ -496,15 +490,7 @@
       document.getElementById("reveal").style.display = "none";
       document.getElementById("reveal").innerHTML = "";
       document.getElementById("nextBtn").disabled = state.mode !== "ucenje";
-      var alreadySaved = getMistakes().indexOf(item.id) !== -1;
-      var markBtn = document.getElementById("markBtn");
-      if (state.mode === "greske") {
-        markBtn.disabled = true;
-        markBtn.textContent = "Vec je u greskama";
-      } else {
-        markBtn.disabled = alreadySaved;
-        markBtn.textContent = alreadySaved ? "Vec u greskama" : (state.mode === "ucenje" ? "Ne znam - dodaj" : "Sacuvaj gresku");
-      }
+      document.getElementById("markBtn").textContent = state.mode === "ucenje" ? "Ne znam" : "Sacuvaj gresku";
 
       var answers = [{ text: item.correct, ok: true }].concat(item.wrong.map(function (w) {
         return { text: w, ok: false };
@@ -528,6 +514,7 @@
         var buttons = wrap.getElementsByTagName("button");
         for (var j = 0; j < buttons.length; j++) {
           buttons[j].disabled = true;
+          if (buttons[j].getAttribute("data-ok") === "1") buttons[j].className = "answer correct";
         }
       }
     }
@@ -565,17 +552,10 @@
 
     function markCurrent() {
       var item = state.deck[state.index];
-      var result = addMistake(item.id);
+      addMistake(item.id);
       if (state.missed.indexOf(item) === -1) state.missed.push(item);
-      var buttons = document.getElementById("answers").getElementsByTagName("button");
-      for (var i = 0; i < buttons.length; i++) {
-        buttons[i].disabled = true;
-        if (buttons[i].getAttribute("data-ok") === "1") buttons[i].className = "answer correct";
-      }
-      showReveal(item, result.added ? "Dodato u greske" : "Vec je u greskama");
+      showReveal(item, "Sacuvano za ponavljanje");
       document.getElementById("nextBtn").disabled = false;
-      document.getElementById("markBtn").textContent = result.added ? "Sacuvano" : "Vec je u greskama";
-      document.getElementById("markBtn").disabled = true;
       state.answered = true;
       updateBadge();
     }
