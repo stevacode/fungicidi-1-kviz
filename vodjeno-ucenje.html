@@ -498,8 +498,13 @@
       document.getElementById("nextBtn").disabled = state.mode !== "ucenje";
       var alreadySaved = getMistakes().indexOf(item.id) !== -1;
       var markBtn = document.getElementById("markBtn");
-      markBtn.disabled = false;
-      markBtn.textContent = alreadySaved ? "Vec u greskama" : (state.mode === "ucenje" ? "Ne znam - dodaj" : "Sacuvaj gresku");
+      if (state.mode === "greske") {
+        markBtn.disabled = true;
+        markBtn.textContent = "Vec je u greskama";
+      } else {
+        markBtn.disabled = alreadySaved;
+        markBtn.textContent = alreadySaved ? "Vec u greskama" : (state.mode === "ucenje" ? "Ne znam - dodaj" : "Sacuvaj gresku");
+      }
 
       var answers = [{ text: item.correct, ok: true }].concat(item.wrong.map(function (w) {
         return { text: w, ok: false };
